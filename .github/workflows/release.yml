@@ -1,7 +1,7 @@
 name: Release
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: "lts/*"
           cache: "npm"
-      
+
       - name: Install Dependencies
         run: npm ci
 
@@ -36,3 +36,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           filename: .github/ISSUE_TEMPLATE/workflow-failure.md
+
+      - name: Update package.json Version
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          VERSION=${LATEST_TAG#v} # Remove "v" prefix if exists
+          jq --arg v "$VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
+          echo "Updated package.json to version $VERSION"
+
+      - name: Commit & Push package.json Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "chore: update package.json to version $(jq -r .version package.json)"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
