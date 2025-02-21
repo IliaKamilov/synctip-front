@@ -13,7 +13,7 @@ const Footer = () => {
   return (
     <footer
       dir="ltr"
-      className="select-none flex text-xs justify-center items-center text-gray-300 dark:text-gray-600"
+      className="flex justify-center items-center p-4 text-gray-300 dark:text-gray-600"
     >
       synctip {version} &copy; 2025
     </footer>
