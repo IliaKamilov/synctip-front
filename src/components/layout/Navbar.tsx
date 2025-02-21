@@ -10,10 +10,25 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+
+const NAVIGATION = {
+  HOME: "/",
+  TERMS: "/terms",
+  PRIVACY: "/privacy",
+};
+
+const TRANSLATIONS: Record<keyof typeof NAVIGATION, string> = {
+  HOME: "בית",
+  TERMS: "תנאים",
+  PRIVACY: "פרטיות",
+};
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
   const menuRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
 
@@ -37,6 +52,19 @@ const Navbar = () => {
   }, [open]);
 
   const handleToggle = () => setOpen(!open);
+
+  const handleLinkClick = () => setOpen(false);
+
+  const activeClassName =
+    "block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500";
+  const defaultClassName =
+    "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent";
+
+  const className = (path: string) => {
+    const isActive = path === pathname;
+
+    return isActive ? activeClassName : defaultClassName;
+  };
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
@@ -89,23 +117,17 @@ const Navbar = () => {
           } w-full md:block md:w-auto" id="navbar-default`}
         >
           <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-            <li>
-              <Link
-                href="/"
-                className="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500"
-                aria-current="page"
-              >
-                בית
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                אודות
-              </Link>
-            </li>
+            {Object.entries(NAVIGATION).map(([key, value]) => (
+              <li key={key}>
+                <Link
+                  onClick={handleLinkClick}
+                  href={value}
+                  className={className(value)}
+                >
+                  {TRANSLATIONS[key as keyof typeof TRANSLATIONS]}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
