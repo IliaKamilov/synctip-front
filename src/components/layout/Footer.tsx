@@ -13,7 +13,7 @@ const Footer = () => {
       dir="ltr"
       className="flex justify-center items-center p-4 text-gray-300"
     >
-      Synctip &copy; 2025
+      synctip &copy; 2025
     </footer>
   );
 };
