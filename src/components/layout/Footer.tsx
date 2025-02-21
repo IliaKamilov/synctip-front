@@ -7,13 +7,15 @@
  * @version 1.0.0
  */
 
+import { version } from "../../../package.json";
+
 const Footer = () => {
   return (
     <footer
       dir="ltr"
-      className="flex justify-center items-center p-4 text-gray-300"
+      className="flex justify-center items-center p-4 text-gray-300 dark:text-gray-600"
     >
-      synctip &copy; 2025
+      synctip {version} &copy; 2025
     </footer>
   );
 };
