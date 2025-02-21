@@ -30,8 +30,6 @@ export const parseDecimalToTime = (str: string): string => {
 
   const time = `${hours.toString()}:${minutes.toString().padStart(2, "0")}`;
 
-  console.log({ str, time });
-
   return time;
 };
 
