@@ -12,7 +12,7 @@
 import Accordion from "@/components/accordion/Accordion";
 import AddEmployeeForm from "@/components/form/AddEmployee";
 import ShiftDetailsForm from "@/components/form/ShiftDetails";
-import EmployeesList from "@/components/list/Employees";
+import EmployeesList from "@/components/list/employees/Employees";
 import TimePreference from "@/components/preference/Time";
 import ShiftSummary from "@/components/summary/Shift";
 import React, { useEffect, useState } from "react";

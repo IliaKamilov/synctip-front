@@ -39,7 +39,7 @@ jobs:
         id: latest_version
         run: |
           # Get the latest version tag
-          LATEST_TAG=$(git describe --tags --match "v[0-9]*" --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LATEST_TAG=$(git describe --tags --match "v[0-9]*" --abbrev=0 2>/develop/null || echo "v0.0.0")
           LATEST_VERSION=${LATEST_TAG#v}
 
           # Handle merges from preview to main
@@ -95,7 +95,7 @@ jobs:
           echo "Creating tag v${NEW_VERSION}"
 
           # Check if tag already exists
-          if git rev-parse "v${NEW_VERSION}" >/dev/null 2>&1; then
+          if git rev-parse "v${NEW_VERSION}" >/develop/null 2>&1; then
             echo "Tag v${NEW_VERSION} already exists"
             exit 1
           fi
