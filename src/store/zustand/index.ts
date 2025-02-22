@@ -7,14 +7,8 @@
  * @version 1.0.0
  */
 
+import { Employee } from "@/types/employee";
 import { create } from "zustand";
-
-interface Employee {
-  id: string;
-  name: string;
-  hours: number;
-  image?: string;
-}
 
 interface EmployeeState {
   items: Employee[];
