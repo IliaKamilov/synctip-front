@@ -1,55 +1,82 @@
 name: Release
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
 
 jobs:
   release:
+    name: 📦 Create Release
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    environment: production
 
-      - name: Set Up Node.js
+    steps:
+      - name: ⬇️ Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: ⎔ Set Up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "lts/*"
           cache: "npm"
 
-      - name: Install Dependencies
+      - name: 📥 Install Dependencies
         run: npm ci
 
-      - name: Build Project
+      - name: 👷 Build Project
         run: npm run build
 
-      - name: Run Semantic Release
-        id: release
-        run: npx semantic-release
-        continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 📝 Generate Changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          output-file: "CHANGELOG.md"
 
-      - name: Create GitHub Issue on Failure
-        if: failure()
-        uses: JasonEtco/create-an-issue@v2
+      - name: 🏷️ Create Release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          filename: .github/ISSUE_TEMPLATE/workflow-failure.md
+          tag_name: v${{ steps.changelog.outputs.version }}
+          release_name: Release v${{ steps.changelog.outputs.version }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+          draft: false
+          prerelease: false
 
-      - name: Update package.json Version
+      - name: Run Semantic Release
+        id: semantic-release
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📝 Update package.json Version
         run: |
           LATEST_TAG=$(git describe --tags --abbrev=0)
-          VERSION=${LATEST_TAG#v} # Remove "v" prefix if exists
+          VERSION=${LATEST_TAG#v}
           jq --arg v "$VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
           echo "Updated package.json to version $VERSION"
 
-      - name: Commit & Push package.json Changes
+      - name: 💾 Commit & Push package.json Changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add package.json
-          git commit -m "chore: update package.json to version $(jq -r .version package.json)"
+          git add package.json CHANGELOG.md
+          git commit -m "chore: update package.json and changelog for version $(jq -r .version package.json)"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📢 Notify on Failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Release Process Failed',
+              body: 'The release process has failed. Please check the workflow logs for more details.',
+              labels: ['bug', 'release-failure']
+            });
