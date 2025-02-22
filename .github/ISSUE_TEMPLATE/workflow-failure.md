@@ -11,7 +11,8 @@ labels: bug, ci/cd
 
 **Branch:** `${{ github.ref }}`
 
-**Error Message:**  
+**Error Message:**
+
 ```
 ${{ job.steps.release.outputs.stdout }}
 ```

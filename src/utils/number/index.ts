@@ -11,7 +11,7 @@ import Big from "big.js";
 
 export const toILS = (
   num: number,
-  maximumFractionDigits: number = 2
+  maximumFractionDigits: number = 2,
 ): string => {
   return Number(num).toLocaleString("he-IL", {
     style: "currency",
