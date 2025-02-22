@@ -16,7 +16,7 @@ export const fakeNumber = (min: number = 1, max: number = 9999): number => {
 export const fakeTips = (total: number = fakeNumber()) => {
   const percentage = [10, 12, 15, 18, 20];
   return Math.floor(
-    total * (percentage[Math.floor(Math.random() * percentage.length)] / 100)
+    total * (percentage[Math.floor(Math.random() * percentage.length)] / 100),
   );
 };
 
