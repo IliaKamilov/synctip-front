@@ -47,6 +47,7 @@ jobs:
         run: |
           # Parse current version
           IFS='.' read -r MAJOR MINOR PATCH <<< "${{ steps.latest_version.outputs.latest_version }}"
+          PATCH_BASE=$(echo $PATCH | sed -E 's/-.*$//')  # Remove any suffix
 
           # Increment based on conventional commits
           COMMIT_MSG=$(git log -1 --pretty=%B)
@@ -62,6 +63,7 @@ jobs:
           fi
 
           BASE_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "Base version calculated as: $BASE_VERSION"
 
           # Set version based on branch
           if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
@@ -75,12 +77,24 @@ jobs:
           fi
 
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Version generated as: $NEW_VERSION"
 
       - name: 🏷️ Create Git Tag
         run: |
-          NEW_VERSION=${{ steps.version.outputs.new_version }}
-          git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
-          git push origin "v${NEW_VERSION}"
+          NEW_VERSION="${{ steps.version.outputs.new_version }}"
+          if [ -z "$NEW_VERSION" ]; then
+            echo "Error: Version is empty"
+            exit 1
+          fi
+          echo "Creating tag v${NEW_VERSION}"
+
+          # Check if tag already exists
+          if git rev-parse "v${NEW_VERSION}" >/dev/null 2>&1; then
+            echo "Tag v${NEW_VERSION} already exists, skipping tag creation"
+          else
+            git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
+            git push origin "v${NEW_VERSION}"
+          fi
 
       - name: 📝 Generate Changelog
         id: changelog
@@ -104,6 +118,7 @@ jobs:
           git push origin "v${VERSION}"
 
       - name: 🚀 Create GitHub Release
+        if: steps.version.outputs.new_version != ''
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -119,8 +134,6 @@ jobs:
           NEW_VERSION=${{ steps.version.outputs.new_version }}
           jq --arg v "$NEW_VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
 
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add package.json
           git commit -m "chore: update package.json version to ${NEW_VERSION} [skip ci]"
           git push
