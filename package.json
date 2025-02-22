@@ -20,6 +20,7 @@
     "*.{ts,tsx,js,jsx}": "eslint --fix"
   },
   "dependencies": {
+    "@types/jest": "^29.5.14",
     "big.js": "^6.2.2",
     "next": "15.1.7",
     "playwright": "^1.50.1",
