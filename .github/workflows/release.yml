@@ -1,7 +1,7 @@
 name: Release
 on:
   push:
-    branches: [main]
+    branches: [main, develop, preview]
 
 jobs:
   release:
@@ -55,8 +55,18 @@ jobs:
         run: |
           LATEST_TAG=$(git describe --tags --abbrev=0)
           VERSION=${LATEST_TAG#v}
-          jq --arg v "$VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
-          echo "Updated package.json to version $VERSION"
+
+          if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+            DEVELOP_VERSION=$(git rev-list --count HEAD)
+            NEW_VERSION="${VERSION}-develop.${DEVELOP_VERSION}"
+          elif [[ $GITHUB_REF == 'refs/heads/preview' ]]; then
+            PREVIEW_VERSION=$(git rev-list --count HEAD)
+            NEW_VERSION="${VERSION}-preview.${PREVIEW_VERSION}"
+          else
+            NEW_VERSION=$VERSION
+          fi
+          jq --arg v "$NEW_VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
+          echo "Updated package.json to version $NEW_VERSION"
 
       - name: 💾 Commit & Push package.json Changes
         run: |
