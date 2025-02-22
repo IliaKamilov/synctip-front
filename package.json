@@ -7,9 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
     "prepare": "husky",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:e2e": "playwright test --pass-with-no-tests"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": "eslint --fix"
@@ -17,6 +22,8 @@
   "dependencies": {
     "big.js": "^6.2.2",
     "next": "15.1.7",
+    "playwright": "^1.50.1",
+    "prettier": "^3.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "zustand": "^5.0.3"
@@ -26,6 +33,7 @@
     "@commitlint/config-conventional": "^19.7.1",
     "@eslint/eslintrc": "^3",
     "@faker-js/faker": "^9.5.0",
+    "@playwright/test": "^1.50.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/npm": "^12.0.1",
