@@ -16,6 +16,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🔧 Configure Git
         run: |
@@ -40,7 +41,15 @@ jobs:
           # Get the latest version tag
           LATEST_TAG=$(git describe --tags --match "v[0-9]*" --abbrev=0 2>/dev/null || echo "v0.0.0")
           LATEST_VERSION=${LATEST_TAG#v}
+
+          # Handle merges from preview to main
+          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+            # Remove rc suffix if present
+            LATEST_VERSION=$(echo $LATEST_VERSION | sed -E 's/-rc\.[0-9]+$//')
+          fi
+
           echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+          echo "Latest version determined as: $LATEST_VERSION"
 
       - name: 📝 Generate New Version
         id: version
@@ -59,7 +68,7 @@ jobs:
             MINOR=$((MINOR + 1))
             PATCH=0
           else
-            PATCH=$((PATCH + 1))
+            PATCH=$((PATCH_BASE + 1))
           fi
 
           BASE_VERSION="$MAJOR.$MINOR.$PATCH"
@@ -80,21 +89,21 @@ jobs:
           echo "Version generated as: $NEW_VERSION"
 
       - name: 🏷️ Create Git Tag
+        if: steps.version.outputs.new_version != ''
         run: |
           NEW_VERSION="${{ steps.version.outputs.new_version }}"
-          if [ -z "$NEW_VERSION" ]; then
-            echo "Error: Version is empty"
-            exit 1
-          fi
           echo "Creating tag v${NEW_VERSION}"
 
           # Check if tag already exists
           if git rev-parse "v${NEW_VERSION}" >/dev/null 2>&1; then
-            echo "Tag v${NEW_VERSION} already exists, skipping tag creation"
-          else
-            git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
-            git push origin "v${NEW_VERSION}"
+            echo "Tag v${NEW_VERSION} already exists"
+            exit 1
           fi
+
+          git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
+          git push origin "v${NEW_VERSION}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📝 Generate Changelog
         id: changelog
@@ -110,13 +119,6 @@ jobs:
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: 🏷️ Create Git Tag
-        if: steps.check_tag.outputs.tag_exists != 'true'
-        run: |
-          VERSION=${{ steps.changelog.outputs.version }}
-          git tag -a "v${VERSION}" -m "Release v${VERSION}"
-          git push origin "v${VERSION}"
-
       - name: 🚀 Create GitHub Release
         if: steps.version.outputs.new_version != ''
         uses: actions/create-release@v1
@@ -130,6 +132,7 @@ jobs:
           prerelease: ${{ github.ref != 'refs/heads/main' }}
 
       - name: 📝 Update package.json Version
+        if: steps.version.outputs.new_version != ''
         run: |
           NEW_VERSION=${{ steps.version.outputs.new_version }}
           jq --arg v "$NEW_VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
@@ -137,3 +140,5 @@ jobs:
           git add package.json
           git commit -m "chore: update package.json version to ${NEW_VERSION} [skip ci]"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
