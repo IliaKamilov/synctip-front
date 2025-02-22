@@ -7,13 +7,15 @@ jobs:
   release:
     name: 📦 Create Release
     runs-on: ubuntu-latest
-    environment: production
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/develop' && 'development' || github.ref == 'refs/heads/preview' && 'preview' }}
 
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
 
       - name: ⎔ Set Up Node.js
         uses: actions/setup-node@v3
@@ -27,74 +29,93 @@ jobs:
       - name: 👷 Build Project
         run: npm run build
 
+      - name: 🔍 Get Latest Version
+        id: latest_version
+        run: |
+          # Get the latest version tag
+          LATEST_TAG=$(git describe --tags --match "v[0-9]*" --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LATEST_VERSION=${LATEST_TAG#v}
+          echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+
+      - name: 📝 Generate New Version
+        id: version
+        run: |
+          # Parse current version
+          IFS='.' read -r MAJOR MINOR PATCH <<< "${{ steps.latest_version.outputs.latest_version }}"
+
+          # Increment based on conventional commits
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          if [[ $COMMIT_MSG == feat!:* ]] || [[ $COMMIT_MSG == *"BREAKING CHANGE"* ]]; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [[ $COMMIT_MSG == feat:* ]]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          else
+            PATCH=$((PATCH + 1))
+          fi
+
+          BASE_VERSION="$MAJOR.$MINOR.$PATCH"
+
+          # Set version based on branch
+          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+            NEW_VERSION="$BASE_VERSION"
+          elif [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+            COMMIT_COUNT=$(git rev-list --count HEAD)
+            NEW_VERSION="$BASE_VERSION-develop.$COMMIT_COUNT"
+          elif [[ $GITHUB_REF == 'refs/heads/preview' ]]; then
+            RC_COUNT=$(git tag -l "v$BASE_VERSION-rc.*" | wc -l)
+            NEW_VERSION="$BASE_VERSION-rc.$((RC_COUNT + 1))"
+          fi
+
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: 🏷️ Create Git Tag
+        run: |
+          NEW_VERSION=${{ steps.version.outputs.new_version }}
+          git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
+          git push origin "v${NEW_VERSION}"
+
       - name: 📝 Generate Changelog
         id: changelog
-        uses: TriPSs/conventional-changelog-action@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          output-file: "CHANGELOG.md"
+        run: |
+          # Get all commits since last tag
+          PREVIOUS_TAG=$(git describe --tags --match "v[0-9]*" --abbrev=0 "HEAD^" 2>/dev/null || echo "")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            CHANGELOG=$(git log --pretty=format:"* %s (%h)" --no-merges)
+          else
+            CHANGELOG=$(git log --pretty=format:"* %s (%h)" --no-merges ${PREVIOUS_TAG}..HEAD)
+          fi
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: 🏷️ Create Release
+      - name: 🏷️ Create Git Tag
+        if: steps.check_tag.outputs.tag_exists != 'true'
+        run: |
+          VERSION=${{ steps.changelog.outputs.version }}
+          git tag -a "v${VERSION}" -m "Release v${VERSION}"
+          git push origin "v${VERSION}"
+
+      - name: 🚀 Create GitHub Release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.changelog.outputs.version }}
-          release_name: Release v${{ steps.changelog.outputs.version }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
+          tag_name: v${{ steps.version.outputs.new_version }}
+          release_name: Release v${{ steps.version.outputs.new_version }}
+          body: ${{ steps.changelog.outputs.CHANGELOG }}
           draft: false
-          prerelease: false
-
-      - name: Run Semantic Release
-        id: semantic-release
-        run: npx semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: ${{ github.ref != 'refs/heads/main' }}
 
       - name: 📝 Update package.json Version
         run: |
-          # Ensure we are not in a detached HEAD state
-          if [ "$(git symbolic-ref --short HEAD)" == "HEAD" ]; then
-            git checkout $GITHUB_REF
-          fi
-
-          # Get the latest version tag
-          LATEST_TAG=$(git describe --tags --abbrev=0)
-          VERSION=${LATEST_TAG#v}
-
-          # Update version based on the branch
-          if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
-            DEVELOP_VERSION=$(git rev-list --count HEAD)
-            NEW_VERSION="${VERSION}-develop.${DEVELOP_VERSION}"
-          elif [[ $GITHUB_REF == 'refs/heads/preview' ]]; then
-            PREVIEW_VERSION=$(git rev-list --count HEAD)
-            NEW_VERSION="${VERSION}-preview.${PREVIEW_VERSION}"
-          else
-            NEW_VERSION=$VERSION
-          fi
-
-          # Update package.json with the new version
+          NEW_VERSION=${{ steps.version.outputs.new_version }}
           jq --arg v "$NEW_VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
-          echo "Updated package.json to version $NEW_VERSION"
 
-      - name: 💾 Commit & Push package.json Changes
-        run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add package.json CHANGELOG.md
-          git diff --cached --exit-code || (git commit -m "chore: update package.json and changelog for version $(jq -r .version package.json)" && git push)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 📢 Notify on Failure
-        if: failure()
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const issue = await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '🚨 Release Process Failed',
-              body: 'The release process has failed. Please check the workflow logs for more details.',
-              labels: ['bug', 'release-failure']
-            });
+          git add package.json
+          git commit -m "chore: update package.json version to ${NEW_VERSION} [skip ci]"
+          git push
