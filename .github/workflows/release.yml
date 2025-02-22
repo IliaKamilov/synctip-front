@@ -53,9 +53,16 @@ jobs:
 
       - name: 📝 Update package.json Version
         run: |
+          # Ensure we are not in a detached HEAD state
+          if [ "$(git symbolic-ref --short HEAD)" == "HEAD" ]; then
+            git checkout $GITHUB_REF
+          fi
+
+          # Get the latest version tag
           LATEST_TAG=$(git describe --tags --abbrev=0)
           VERSION=${LATEST_TAG#v}
 
+          # Update version based on the branch
           if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
             DEVELOP_VERSION=$(git rev-list --count HEAD)
             NEW_VERSION="${VERSION}-develop.${DEVELOP_VERSION}"
@@ -65,6 +72,8 @@ jobs:
           else
             NEW_VERSION=$VERSION
           fi
+
+          # Update package.json with the new version
           jq --arg v "$NEW_VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
           echo "Updated package.json to version $NEW_VERSION"
 
