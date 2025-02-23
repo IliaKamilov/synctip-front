@@ -25,6 +25,7 @@ const WhatsappShare = () => {
 
   const appUrl = "https://synctip.com";
   const date = new Date(shift.date);
+  console.log(date);
   const dateStr = date.toLocaleDateString("he-IL", {
     weekday: "long",
     day: "numeric",

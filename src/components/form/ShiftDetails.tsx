@@ -11,6 +11,7 @@ import { useShiftState } from "@/store/zustand";
 import TextField from "../input/TextField";
 import Form from "./Form";
 import { ChangeEvent, FocusEvent } from "react";
+import { formatDate } from "@/utils/format-date/formatDate";
 
 const ShiftDetailsForm = () => {
   const { data: details, update } = useShiftState();
@@ -19,6 +20,7 @@ const ShiftDetailsForm = () => {
     const { name, value } = e.target;
 
     if (Object.keys(details).indexOf(name) > -1) {
+      console.log({ name, value });
       update({
         [name]: value,
       });
@@ -37,15 +39,19 @@ const ShiftDetailsForm = () => {
     }
   };
 
+  const date = new Date(details.date);
+
   return (
     <Form>
       <TextField
         id="name"
-        name="name"
+        name="date"
         type="date"
         required
         placeholder="בחר תאריך"
         label="תאריך"
+        value={formatDate(date)}
+        onChange={handleChange}
       />
       <TextField
         onFocus={handleFocus}
