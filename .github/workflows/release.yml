@@ -1,0 +1,36 @@
+name: Release 
+
+on:
+    push: 
+        branches:
+            - demo
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs: 
+    release:
+        name: Release
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout branch
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                node-version: 20
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Generate Version
+              run: npm run version
+
+            - name: Create Release Pull Request
+              id: changesets
+              uses: changesets/action@v1
+              with: 
+                publish: npm run publish
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              
