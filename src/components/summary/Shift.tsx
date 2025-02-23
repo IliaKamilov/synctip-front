@@ -40,7 +40,7 @@ const ShiftSummary = () => {
         שעות:{" "}
         {preference.time === "decimal"
           ? totalHours.toFixed(2)
-          : parseDecimalToTime(totalHours.toString())}
+          : parseDecimalToTime(totalHours)}
       </div>
       <div>לשעה: {toILS(perHour || 0)}</div>
       <div>

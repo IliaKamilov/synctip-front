@@ -9,7 +9,7 @@
 
 import { useEmployeeState, useShiftState } from "@/store/zustand";
 import Link from "next/link";
-import { version } from "../../../package.json";
+import pkg from "../../../package.json";
 import {
   calcAvgTips,
   calcHours,
@@ -46,7 +46,7 @@ const WhatsappShare = () => {
     .join("\n\n");
 
   const message = `
-Synctip ${version} © ${new Date().getFullYear()}
+Synctip ${pkg.version} © ${new Date().getFullYear()}
 🚀 ${appUrl}
 -------------------------------
 > דוח טיפים
