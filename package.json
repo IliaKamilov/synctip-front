@@ -1,6 +1,6 @@
 {
   "name": "synctip",
-  "version": "0.0.1",
+  "version": "0.0.1-rc.2",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -17,7 +17,12 @@
     "test:e2e": "playwright test --pass-with-no-tests"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": "eslint --fix"
+    "*.{js,ts,tsx,jsx}": [
+      "npm run format",
+      "npm run lint --fix"
+    ],
+    "*.json": "npm run format",
+    "*.md": "npm run format"
   },
   "dependencies": {
     "@types/jest": "^29.5.14",

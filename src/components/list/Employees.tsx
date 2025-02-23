@@ -77,7 +77,7 @@ const EmployeesList = () => {
               <p className="text-sm text-gray-500 truncate dark:text-gray-400">
                 {preference.time === "decimal"
                   ? employee.hours.toFixed(2)
-                  : parseDecimalToTime(employee.hours.toString())}
+                  : parseDecimalToTime(employee.hours)}
               </p>
             </div>
             <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">

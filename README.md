@@ -1,8 +1,10 @@
-# Synctip 
+# Synctip
+
 [![GitHub release](https://img.shields.io/github/v/release/IliaKamilov/synctip)](https://github.com/IliaKamilov/synctip/releases/latest)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fwww.synctip.com)](https://www.synctip.com)
 
 ## Overview
+
 Synctip is a comprehensive tip calculation and management platform designed to streamline operations for businesses in the service industry. Our solution eliminates human calculation errors, reduces time spent on shift reporting, and provides a centralized platform for all stakeholders.
 
 ### Who It's For
@@ -14,15 +16,18 @@ Synctip is a comprehensive tip calculation and management platform designed to s
 ## Key Features
 
 ### Tips Management
+
 - Automated tip calculations with support for multiple employees
 - Customizable distribution rules and shift parameters
 - Real-time calculation updates and verification
 - Historical records and reporting
 
 ### Communication Tools
+
 - Seamless WhatsApp integration for instant shift report sharing
 
 ### Analytics & Reporting
+
 - Comprehensive earnings tracking
 - Shift performance metrics
 - Business intelligence dashboards
@@ -46,9 +51,11 @@ Detailed usage instructions are available in our [official documentation](https:
 ## Legal Information
 
 ### Licensing
+
 This software is proprietary and owned by Ilia Kamilov / Synctip. All rights reserved.
 
 ### Restrictions
+
 - Unauthorized distribution is prohibited
 - Modification of source code is not permitted
 - Reverse engineering is strictly forbidden
