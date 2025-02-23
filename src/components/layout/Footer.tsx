@@ -7,7 +7,7 @@
  * @version 1.0.0
  */
 
-import { version } from "../../../package.json";
+import pkg from "../../../package.json";
 
 const Footer = () => {
   return (
@@ -15,7 +15,7 @@ const Footer = () => {
       dir="ltr"
       className="select-none flex text-xs justify-center items-center text-gray-300 dark:text-gray-600"
     >
-      synctip {version} &copy; 2025
+      synctip {pkg.version} &copy; 2025
     </footer>
   );
 };

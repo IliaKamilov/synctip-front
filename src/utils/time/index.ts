@@ -18,7 +18,7 @@ export const parseTimeToDecimal = (str: string): number => {
   return Number(str);
 };
 
-export const parseDecimalToTime = (str: string): string => {
+export const parseDecimalToTime = (str: number): string => {
   if (!str) return "";
 
   const num = Number(str);
@@ -26,7 +26,7 @@ export const parseDecimalToTime = (str: string): string => {
   if (isNaN(num)) return "NaN";
 
   const hours = Math.floor(num);
-  const minutes = Math.floor((num - hours) * 60);
+  const minutes = Math.round((num - hours) * 60);
 
   const time = `${hours.toString()}:${minutes.toString().padStart(2, "0")}`;
 
