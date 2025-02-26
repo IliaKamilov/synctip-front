@@ -7,21 +7,28 @@
  * @version 0.0.1
  */
 
-import { usePreferenceState } from "@/store/zustand";
+import {
+  useEmployeeState,
+  usePreferenceState,
+  useShiftState,
+} from "@/store/zustand";
 import { Employee } from "@/types/employee";
-import { toILS } from "@/utils/number";
+import { calcHours, calcPerHour, toILS } from "@/utils/number";
 import { parseDecimalToTime } from "@/utils/time";
 import Image from "next/image";
 
 type EmployeeItemProps = {
-  employee: Employee & {
-    perHour: number;
-  };
+  employee: Employee;
 };
 
 const EmployeeItem = (props: EmployeeItemProps) => {
   const { employee } = props;
   const { data: preference } = usePreferenceState();
+  const { data: shift } = useShiftState();
+  const { items: employees } = useEmployeeState();
+
+  const hours = calcHours(employees.map((e) => e.hours));
+  const perHour = calcPerHour(hours, shift.tips);
 
   return (
     <div className="flex items-center space-x-4 rtl:space-x-reverse">
@@ -63,7 +70,7 @@ const EmployeeItem = (props: EmployeeItemProps) => {
         </p>
       </div>
       <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-        {toILS(employee.perHour)}
+        {toILS(perHour)}
       </div>
     </div>
   );

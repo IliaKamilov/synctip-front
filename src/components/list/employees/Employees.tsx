@@ -7,12 +7,10 @@
  * @version 0.0.1
  */
 
-import { useEmployeeState, useShiftState } from "@/store/zustand";
-import { calcPerHour } from "@/utils/number";
+import { useEmployeeState } from "@/store/zustand";
 import EmployeeItem from "./Item";
 
 const EmployeesList = () => {
-  const { data: shift } = useShiftState();
   const { items: employees } = useEmployeeState();
 
   if (employees.length === 0) {
@@ -27,12 +25,7 @@ const EmployeesList = () => {
     <ul className="w-full mb-6 divide-y divide-gray-200 dark:divide-gray-700">
       {employees.map((employee, index) => (
         <li key={index} className="py-2">
-          <EmployeeItem
-            employee={{
-              ...employee,
-              perHour: calcPerHour(employee.hours, shift.tips),
-            }}
-          />
+          <EmployeeItem employee={employee} />
         </li>
       ))}
     </ul>
