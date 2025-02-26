@@ -2,6 +2,8 @@
 
 [![GitHub release](https://img.shields.io/github/v/release/IliaKamilov/synctip)](https://github.com/IliaKamilov/synctip/releases/latest)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fwww.synctip.com)](https://www.synctip.com)
+![GitHub branch status](https://img.shields.io/github/checks-status/IliaKamilov/synctip/main)
+
 
 ## Overview
 
