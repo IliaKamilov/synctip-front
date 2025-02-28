@@ -70,7 +70,7 @@ const EmployeeItem = (props: EmployeeItemProps) => {
         </p>
       </div>
       <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-        {toILS(perHour)}
+        {toILS(perHour * employee.hours)}
       </div>
     </div>
   );
