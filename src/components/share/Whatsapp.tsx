@@ -23,7 +23,7 @@ const WhatsappShare = () => {
   const { items: employees } = useEmployeeState();
   const { data: shift } = useShiftState();
 
-  const appUrl = "https://synctip.com";
+  const appUrl = "synctip.com";
   const date = new Date(shift.date);
   const dateStr = date.toLocaleDateString("he-IL", {
     weekday: "long",
@@ -45,24 +45,33 @@ const WhatsappShare = () => {
     )
     .join("\n\n");
 
+  const rtlMark = "\u200F";
+
   const message = `
 Synctip ${pkg.version} © ${new Date().getFullYear()}
-🚀 ${appUrl}
--------------------------------
-> דוח טיפים
-📅 *${dateStr}*
+${appUrl}
 
-💵 *קופה* ${toILS(shift.total, 0)}
-🪙 *טיפים* ${toILS(shift.tips, 0)} \`${avgTips}%\`
-🕒 *שעות* ${totalHours.toFixed(2)}
-🫰 *לשעה* ${toILS(perHour, 1)}
+*תאריך*
+> *${dateStr}*
 
+*קופה* 
+> ${toILS(shift.total, 0)}
 
-👯 *צוות* (${employees.length})
+*טיפים* 
+> ${toILS(shift.tips, 0)} \`${avgTips}%\`
+
+*שעות* 
+> ${rtlMark}${totalHours.toFixed(2)}
+
+*לשעה*
+> ${toILS(perHour, 1)}
+
+*צוות* (${employees.length})
 
 ${teamTxt}
 
-#️⃣ *מזהה* ${generateID()}
+*מזהה* 
+> ${generateID()}
 \n`;
   const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
 
