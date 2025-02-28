@@ -4,7 +4,6 @@
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fwww.synctip.com)](https://www.synctip.com)
 ![GitHub branch status](https://img.shields.io/github/checks-status/IliaKamilov/synctip/main)
 
-
 ## Overview
 
 Synctip is a comprehensive tip calculation and management platform designed to streamline operations for businesses in the service industry. Our solution eliminates human calculation errors, reduces time spent on shift reporting, and provides a centralized platform for all stakeholders.
