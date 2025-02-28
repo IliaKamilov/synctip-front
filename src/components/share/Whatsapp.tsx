@@ -25,7 +25,6 @@ const WhatsappShare = () => {
 
   const appUrl = "https://synctip.com";
   const date = new Date(shift.date);
-  console.log(date);
   const dateStr = date.toLocaleDateString("he-IL", {
     weekday: "long",
     day: "numeric",
@@ -41,8 +40,8 @@ const WhatsappShare = () => {
     .map(
       (e) =>
         `- *${e.name}* - ${e.hours.toFixed(2)} \`${toILS(
-          calcWage(perHour, e.hours),
-        )}\``,
+          calcWage(perHour, e.hours)
+        )}\``
     )
     .join("\n\n");
 
