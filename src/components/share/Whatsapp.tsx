@@ -7,7 +7,7 @@
  * @version 1.0.0
  */
 
-import { useEmployeeState, useShiftState } from "@/store/zustand";
+import { Shift, useEmployeeState, useShiftState } from "@/store/zustand";
 import Link from "next/link";
 import pkg from "../../../package.json";
 import {
@@ -18,6 +18,69 @@ import {
   toILS,
 } from "@/utils/number";
 import { generateID } from "../report";
+import { Employee } from "@/types/employee";
+
+export const encodeWhatsAppMessage = (data: {
+  shift: Shift;
+  employees: Employee[];
+}) => {
+  const { shift, employees } = data;
+  const appUrl = "synctip.com";
+  const date = new Date(shift.date);
+  const dateStr = date.toLocaleDateString("he-IL", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const tips = shift.tips;
+  const totalHours = calcHours(employees.map((e) => e.hours));
+  const perHour = calcPerHour(totalHours, tips);
+  const avgTips = calcAvgTips(tips, shift.total).toFixed(1);
+
+  const teamTxt = employees
+    .map(
+      (e) =>
+        `- *${e.name}* - ${e.hours.toFixed(2)} \`${toILS(
+          calcWage(perHour, e.hours),
+        )}\``,
+    )
+    .join("\n\n");
+
+  const rtlMark = "\u200F";
+
+  const message = `
+${appUrl} © ${new Date().getFullYear()}
+> v${pkg.version}
+
+*תאריך*
+> *${dateStr}*
+
+*קופה* 
+> ${toILS(shift.total, 0)}
+
+*טיפים* 
+> ${toILS(shift.tips, 0)} \`${avgTips}%\`
+
+*שעות* 
+> ${rtlMark}${totalHours.toFixed(2)}
+
+*לשעה*
+> ${toILS(perHour, 1)}
+
+*צוות* (${employees.length})
+
+${teamTxt}
+
+*מזהה* 
+> ${generateID()}
+\n`;
+
+  const encoded = encodeURIComponent(message);
+  const url = `https://wa.me/?text=${encoded}`;
+
+  return { url, message };
+};
 
 const WhatsappShare = () => {
   const { items: employees } = useEmployeeState();
