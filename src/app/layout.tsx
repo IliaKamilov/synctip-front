@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import { Synctip } from "@/components/Synctip";
 import { ThemeModeScript } from "@/components/ThemeModeScript/ThemeModeScript";
 
@@ -31,9 +29,7 @@ export default function RootLayout({
         className={`${inter.className} antialiased flex flex-col min-h-screen`}
       >
         <Synctip>
-          <Navbar />
           <main className="flex-grow">{children}</main>
-          <Footer />
         </Synctip>
       </body>
     </html>
