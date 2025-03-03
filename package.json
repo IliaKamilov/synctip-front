@@ -1,6 +1,6 @@
 {
   "name": "synctip",
-  "version": "0.0.15",
+  "version": "0.0.16-rc.1",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -25,13 +25,16 @@
     "*.md": "npm run format"
   },
   "dependencies": {
+    "@floating-ui/react": "^0.27.5",
     "@types/jest": "^29.5.14",
+    "@uidotdev/usehooks": "^2.4.1",
     "big.js": "^6.2.2",
     "next": "15.1.7",
     "playwright": "^1.50.1",
     "prettier": "^3.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.0.2",
     "ts-jest": "^29.2.5",
     "zustand": "^5.0.3"
   },
