@@ -7,7 +7,6 @@ import { twMerge } from "tailwind-merge";
 import { DrawerContext } from "./DrawerContext";
 import { Button } from "../Button";
 import { Bar2 } from "../Icon/Bar2";
-import { Chevron, ChevronProps } from "../Icon/Chevron";
 
 type Position = "top" | "left" | "right" | "bottom";
 
@@ -61,63 +60,46 @@ const DrawerComponent: FC<DrawerProps> = ({
 
   const theme = mergeDeep(getTheme().drawer, customTheme);
 
-  const toggleOpen = () => setOpen(!open);
-
-  const chevronDirection = (): ChevronProps["direction"] => {
-    switch (initPosition) {
-      case "top":
-        return "up";
-      case "bottom":
-        return "down";
-      case "left":
-        return "right";
-      case "right":
-        return "left";
-      default:
-        return initPosition;
-    }
+  const positionClasses = {
+    top: open ? "translate-y-0" : "-translate-y-full",
+    bottom: open ? "translate-y-0" : "translate-y-full",
+    left: open ? "translate-x-0" : "-translate-x-full",
+    right: open ? "translate-x-0" : "translate-x-full",
   };
 
   return (
     <DrawerContext.Provider value={{ open, setOpen: setOpen, theme }}>
-      <Button onClick={toggleOpen} className="">
-        {open ? (
-          <Chevron
-            direction={chevronDirection()}
-            width={56}
-            height={56}
-            className="p-4 transition-transform duration-500"
-          />
-        ) : (
-          <Bar2
-            width={56}
-            height={56}
-            className="p-4 transition-transform duration-500"
-          />
-        )}
+      <Button onClick={() => setOpen(true)} className="p-2">
+        <Bar2
+          width={56}
+          height={56}
+          className="p-4 transition-transform duration-100"
+        />
       </Button>
-      {open && (
-        <>
-          <div className="fixed top-0 left-0 w-full h-full bg-gray-900 opacity-15">
-            backdrop
-          </div>
-          <div
-            ref={contentRef}
-            className={twMerge(
-              theme.root.base,
-              theme.root.position[initPosition],
-              className,
-              screen ? "w-full h-full" : "",
-            )}
-            {...props}
-          >
-            <div className="flex text-sm font-semibold w-full items-center justify-center p-4 rounded-t-full border-t-transparent bg-white border-b">
-              {label}
-            </div>
-            <div className="bg-white dark:bg-gray-600">{children}</div>
-          </div>
-        </>
-      )}
+      {/* Backdrop */}
+      <div
+        className={`fixed inset-0 bg-gray-900 transition-opacity duration-100 ${open ? "opacity-50" : "opacity-0 pointer-events-none"}`}
+        onClick={() => setOpen(false)}
+      />
+
+      {/* Drawer */}
+      <div
+        ref={contentRef}
+        className={twMerge(
+          theme.root.base,
+          theme.root.position[initPosition],
+          className,
+          screen ? "w-full h-full" : "",
+          "fixed z-50 transition-transform duration-100 ease-in-out",
+          positionClasses[initPosition],
+        )}
+        {...props}
+      >
+        <div className="flex text-gray-500 text-sm font-semibold w-full items-center justify-center p-4 rounded-t-full border-t-transparent bg-white dark:bg-gray-800 border-b-white">
+          {label}
+        </div>
+        <div className="bg-white dark:bg-gray-800">{children}</div>
+      </div>
     </DrawerContext.Provider>
   );
 };
