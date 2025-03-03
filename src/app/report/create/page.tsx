@@ -5,13 +5,19 @@ import { Chevron } from "@/components/Icon/Chevron";
 import { Modal, ModalProps } from "@/components/Modal/Modal";
 import { Navbar } from "@/components/Navbar";
 import { encodeWhatsAppMessage } from "@/components/share/Whatsapp";
+import { Spinner } from "@/components/Spinner/Spinner";
 import { useIsMounted } from "@/hooks/use-is-mounted";
 import { useEmployeeState, useShiftState } from "@/store/zustand";
 import { Employee } from "@/types/employee";
 import { formatDate } from "@/utils/format-date/formatDate";
-import { calcHours, calcPerHour, calcWage, toILS } from "@/utils/number";
+import {
+  calcAvgTips,
+  calcHours,
+  calcPerHour,
+  calcWage,
+  toILS,
+} from "@/utils/number";
 import { extractTime, parseTimeToDecimal } from "@/utils/time";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ChangeEvent,
@@ -30,7 +36,7 @@ const Input: FC<InputProps> = ({ className, ...props }) => {
     <input
       className={twMerge(
         className,
-        "p-2 box-border w-full bg-white dark:bg-gray-800 border rounded-lg my-2",
+        "p-2 box-border w-full bg-white dark:bg-gray-800 border dark:border-gray-700 outline-none rounded-lg my-2",
       )}
       {...props}
     />
@@ -141,6 +147,7 @@ const AddEmployee: FC<AddEmployeeProps> = ({}) => {
 const NewReportPage = () => {
   const isMounted = useIsMounted();
   const router = useRouter();
+  const [loading, setLoading] = useState(isMounted);
   const { items: employees } = useEmployeeState();
   const { data: shift, update } = useShiftState();
   const [selected, setSelected] = useState<Employee | null>(null);
@@ -153,35 +160,44 @@ const NewReportPage = () => {
     }
   };
 
+  const handleSend = () => {
+    setLoading(true);
+    router.push(encodeWhatsAppMessage({ shift, employees }).url);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
+
   const hours = calcHours(employees.map((e) => e.hours));
   const perhour = calcPerHour(hours, shift.tips);
 
   if (!isMounted) return <>loading</>;
 
+  const localeDate = new Date(shift.date).toLocaleDateString("he-IL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    weekday: "long",
+  });
+
   return (
     <Fragment>
       <Navbar className="min-h-[80px]">
-        <Button onClick={() => router.back()} className="py-2">
+        <Button onClick={() => router.back()} className="py-2 fixed right-0">
           <Chevron direction="right" className="p-4" width={56} height={56} />
         </Button>
         <h1 className="w-full text-center text-lg font-semibold">דוח טיפים</h1>
-        <Button className="py-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            width={56}
-            height={56}
-            className="p-4"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
-            />
-          </svg>
+        <Button
+          onClick={handleSend}
+          disabled={employees.length === 0 || loading}
+          className={twMerge(
+            "bg-green-500 text-gray-900 dark:text-gray-900 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 font-semibold p-2 px-4 text-md rounded-lg ml-4 fixed left-0",
+            loading &&
+              "bg-transparent disabled:bg-transparent dark:bg-transparent disabled:dark:bg-transparent",
+          )}
+        >
+          {loading ? <Spinner color="success" size="md" /> : "שלח"}
         </Button>
       </Navbar>
       <main className="box-border flex flex-grow-1 flex-col w-full h-full py-4 gap-4 overflow-auto">
@@ -253,13 +269,39 @@ const NewReportPage = () => {
             })}
           </ul>
         </section>
+        <section className="p-4 dark:bg-gray-900 flex flex-col gap-2">
+          <h2 className="text-sm font-semibold ">סיכום</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <h3 className="text-sm text-gray-600 dark:text-gray-400">
+                תאריך
+              </h3>
+              <time className="text-md font-medium">{localeDate}</time>
+            </div>
+            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <h3 className="text-sm text-gray-600 dark:text-gray-400">
+                שעות צוות
+              </h3>
+              <span className="text-md font-medium">{hours.toFixed(2)}</span>
+            </div>
+            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <h3 className="text-sm text-gray-600 dark:text-gray-400">
+                טיפ לשעה
+              </h3>
+              <span className="text-md font-medium">{toILS(perhour)}</span>
+            </div>
+
+            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <h3 className="text-sm text-gray-600 dark:text-gray-400">
+                אחוז שירות
+              </h3>
+              <span className="text-md font-medium">
+                {calcAvgTips(shift.tips, shift.total).toFixed(1)} %
+              </span>
+            </div>
+          </div>
+        </section>
       </main>
-      <Link
-        href={encodeWhatsAppMessage({ shift, employees }).url}
-        className="bg-green-500 p-4 text-md font-medium text-gray-800 text-center"
-      >
-        שמור ושלח
-      </Link>
       {selected && (
         <EmployeeMenuModal
           employee={selected}

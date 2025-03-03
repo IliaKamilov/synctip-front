@@ -54,7 +54,39 @@ const HomeNavbar = () => {
 const HomePage = () => {
   return (
     <>
-      <HomeNavbar />
+      <div className="min-h-[72px]">
+        <HomeNavbar />
+      </div>
+      <div className="w-full h-full flex flex-col p-6">
+        <div className="mx-auto my-20 gap-4 flex flex-col">
+          <h1 className="text-4xl text-left">Synctip</h1>
+          <h2 className="text-4xl dark:text-gray-300">
+            בונים את העתיד של עולם השירות
+          </h2>
+        </div>
+        <div className="flex flex-row items-center justify-center w-full">
+          <Link
+            href="/report/create"
+            className="flex flex-row gap-4 items-center justify-center dark:bg-purple-950 bg-purple-500 text-white dark:text-purple-300 text-xl px-4 py-2 rounded-xl"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+            דוח טיפים
+          </Link>
+        </div>
+      </div>
     </>
   );
 };
