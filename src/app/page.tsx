@@ -18,7 +18,7 @@
 import React, { useEffect, useState } from "react";
 import HomePage from "./home/page";
 
-const Home = () => {
+const RootPage = () => {
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -31,20 +31,7 @@ const Home = () => {
     <>
       <HomePage />
     </>
-    // <div className="container sm:p-2 p-4 w-full mx-auto">
-    //   <Accordion title="פרטי משמרת">
-    //     <ShiftDetailsForm />
-    //   </Accordion>
-    //   <Accordion title="אנשי צוות">
-    //     <TimePreference />
-    //     <EmployeesList />
-    //     <AddEmployeeForm />
-    //   </Accordion>
-    //   <Accordion title="סיכום">
-    //     <ShiftSummary />
-    //   </Accordion>
-    // </div>
   );
 };
 
-export default Home;
+export default RootPage;

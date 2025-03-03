@@ -13,12 +13,14 @@ import {
 } from "./components/Icon/theme";
 import { modalTheme } from "./components/Modal/theme";
 import { navbarTheme } from "./components/Navbar/theme";
+import { spinnerTheme } from "./components/Spinner/theme";
 import { themeToggleTheme } from "./components/ThemeToggle/theme";
 
 export const theme: SynctipTheme = {
   root: {
     main: "",
   },
+  spinner: spinnerTheme,
   modal: modalTheme,
   avatar: avatarTheme,
   drawer: drawerTheme,

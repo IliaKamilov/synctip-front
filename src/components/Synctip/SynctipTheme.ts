@@ -12,6 +12,7 @@ import { DrawerTheme } from "../Drawer/Drawer";
 import { ChevronTheme } from "../Icon/Chevron";
 import { AvatarTheme } from "../Avatar/Avatar";
 import { ModalTheme } from "../Modal/Modal";
+import { SpinnerTheme } from "../Spinner/Spinner";
 
 export type CustomSynctipTheme = DeepPartial<SynctipTheme>;
 
@@ -19,6 +20,7 @@ export interface SynctipTheme {
   root: {
     main: string;
   };
+  spinner: SpinnerTheme;
   modal: ModalTheme;
   avatar: AvatarTheme;
   drawer: DrawerTheme;
