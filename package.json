@@ -1,6 +1,6 @@
 {
   "name": "synctip",
-  "version": "0.0.21-develop.137",
+  "version": "0.0.22-develop.139",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
