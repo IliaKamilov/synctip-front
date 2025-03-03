@@ -9,13 +9,14 @@
 
 "use client";
 
-import Accordion from "@/components/accordion/Accordion";
-import AddEmployeeForm from "@/components/form/AddEmployee";
-import ShiftDetailsForm from "@/components/form/ShiftDetails";
-import EmployeesList from "@/components/list/employees/Employees";
-import TimePreference from "@/components/preference/Time";
-import ShiftSummary from "@/components/summary/Shift";
+// import Accordion from "@/components/accordion/Accordion";
+// import AddEmployeeForm from "@/components/form/AddEmployee";
+// import ShiftDetailsForm from "@/components/form/ShiftDetails";
+// import EmployeesList from "@/components/list/employees/Employees";
+// import TimePreference from "@/components/preference/Time";
+// import ShiftSummary from "@/components/summary/Shift";
 import React, { useEffect, useState } from "react";
+import HomePage from "./home/page";
 
 const Home = () => {
   const [mounted, setMounted] = useState<boolean>(false);
@@ -27,19 +28,22 @@ const Home = () => {
   if (!mounted) return <div>loading</div>;
 
   return (
-    <div className="container sm:p-2 p-4 w-full mx-auto">
-      <Accordion title="פרטי משמרת">
-        <ShiftDetailsForm />
-      </Accordion>
-      <Accordion title="אנשי צוות">
-        <TimePreference />
-        <EmployeesList />
-        <AddEmployeeForm />
-      </Accordion>
-      <Accordion title="סיכום">
-        <ShiftSummary />
-      </Accordion>
-    </div>
+    <>
+      <HomePage />
+    </>
+    // <div className="container sm:p-2 p-4 w-full mx-auto">
+    //   <Accordion title="פרטי משמרת">
+    //     <ShiftDetailsForm />
+    //   </Accordion>
+    //   <Accordion title="אנשי צוות">
+    //     <TimePreference />
+    //     <EmployeesList />
+    //     <AddEmployeeForm />
+    //   </Accordion>
+    //   <Accordion title="סיכום">
+    //     <ShiftSummary />
+    //   </Accordion>
+    // </div>
   );
 };
 
