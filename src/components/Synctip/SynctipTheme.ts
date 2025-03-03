@@ -7,10 +7,17 @@ import { NavbarTheme } from "../Navbar/Navbar";
 import { ButtonTheme } from "../Button/Button";
 import { XMarkIconTheme } from "../Icon/XMark";
 import { DropdownTheme } from "../Dropdown/Dropdown";
+import { Bar2Theme } from "../Icon/Bar2";
+import { DrawerTheme } from "../Drawer/Drawer";
+import { ChevronTheme } from "../Icon/Chevron";
 
 export type CustomSynctipTheme = DeepPartial<SynctipTheme>;
 
 export interface SynctipTheme {
+  root: {
+    main: string;
+  };
+  drawer: DrawerTheme;
   dropdown: DropdownTheme;
   button: ButtonTheme;
   navbar: NavbarTheme;
@@ -22,5 +29,7 @@ export interface SynctipTheme {
     moon: MoonIconTheme;
     sun: SunIconTheme;
     xMark: XMarkIconTheme;
+    bar2: Bar2Theme;
+    chevron: ChevronTheme;
   };
 }

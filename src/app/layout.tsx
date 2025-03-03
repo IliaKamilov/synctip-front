@@ -28,9 +28,7 @@ export default function RootLayout({
         dir="rtl"
         className={`${inter.className} antialiased flex flex-col min-h-screen`}
       >
-        <Synctip>
-          <main className="flex-grow">{children}</main>
-        </Synctip>
+        <Synctip>{children}</Synctip>
       </body>
     </html>
   );
