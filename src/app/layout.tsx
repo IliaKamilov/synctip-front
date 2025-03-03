@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Assistant } from "next/font/google";
 import "./globals.css";
 import { Synctip } from "@/components/Synctip";
 import { ThemeModeScript } from "@/components/ThemeModeScript/ThemeModeScript";
 
-const inter = Inter({
+const assistant = Assistant({
   subsets: ["latin"],
 });
 
@@ -24,10 +24,7 @@ export default function RootLayout({
       <head>
         <ThemeModeScript />
       </head>
-      <body
-        dir="rtl"
-        className={`${inter.className} antialiased flex flex-col min-h-screen`}
-      >
+      <body dir="rtl" className={`${assistant.className}`}>
         <Synctip>{children}</Synctip>
       </body>
     </html>

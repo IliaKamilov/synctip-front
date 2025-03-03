@@ -10,6 +10,8 @@ import { DropdownTheme } from "../Dropdown/Dropdown";
 import { Bar2Theme } from "../Icon/Bar2";
 import { DrawerTheme } from "../Drawer/Drawer";
 import { ChevronTheme } from "../Icon/Chevron";
+import { AvatarTheme } from "../Avatar/Avatar";
+import { ModalTheme } from "../Modal/Modal";
 
 export type CustomSynctipTheme = DeepPartial<SynctipTheme>;
 
@@ -17,6 +19,8 @@ export interface SynctipTheme {
   root: {
     main: string;
   };
+  modal: ModalTheme;
+  avatar: AvatarTheme;
   drawer: DrawerTheme;
   dropdown: DropdownTheme;
   button: ButtonTheme;

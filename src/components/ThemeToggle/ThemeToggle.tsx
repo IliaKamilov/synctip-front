@@ -43,12 +43,16 @@ export const ThemeToggle: FC<ThemeToggleProps> = ({
       <MoonIcon
         aria-label="Currently dark mode"
         data-active={isMounted && computedMode === "dark"}
-        className={twMerge(theme.root.icon, "hidden dark:block")}
+        width={56}
+        height={56}
+        className={twMerge(theme.root.icon, "hidden dark:block", "p-4")}
       />
       <SunIcon
         aria-label="Currently light mode"
         data-active={isMounted && computedMode === "light"}
-        className={twMerge(theme.root.icon, "dark:hidden")}
+        width={56}
+        height={56}
+        className={twMerge(theme.root.icon, "dark:hidden", "p-4")}
       />
     </button>
   );
