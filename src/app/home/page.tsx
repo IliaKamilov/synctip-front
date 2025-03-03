@@ -2,6 +2,7 @@ import { Drawer } from "@/components/Drawer";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import Link from "next/link";
 import { Fragment } from "react";
+import pkg from "package.json";
 
 const HomeNavbar = () => {
   return (
@@ -32,6 +33,17 @@ const HomeNavbar = () => {
               </Link>
             </li>
           </ul>
+          <div className="flex mt-10 p-2 text-gray-500 rtl:flex-row-reverse items-center justify-center text-xs font-light flex-row w-full gap-2">
+            <Link href="https://synctip.com">synctip.com</Link>
+            <span>&copy;</span>
+            <Link
+              className="border p-0.5 px-1 rounded-md bg-gray-500 text-gray-900 border-gray-700"
+              href="https://github.com/iliakamilov/synctip"
+            >
+              v{pkg.version}
+            </Link>
+            <span>{new Date().getFullYear()}</span>
+          </div>
         </Drawer>
         <ThemeToggle />
       </nav>
