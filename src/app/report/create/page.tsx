@@ -9,7 +9,7 @@ import { useIsMounted } from "@/hooks/use-is-mounted";
 import { useEmployeeState, useShiftState } from "@/store/zustand";
 import { Employee } from "@/types/employee";
 import { formatDate } from "@/utils/format-date/formatDate";
-import { calcPerHour, toILS } from "@/utils/number";
+import { calcHours, calcPerHour, calcWage, toILS } from "@/utils/number";
 import { extractTime, parseTimeToDecimal } from "@/utils/time";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -153,6 +153,9 @@ const NewReportPage = () => {
     }
   };
 
+  const hours = calcHours(employees.map((e) => e.hours));
+  const perhour = calcPerHour(hours, shift.tips);
+
   if (!isMounted) return <>loading</>;
 
   return (
@@ -223,7 +226,7 @@ const NewReportPage = () => {
           </div>
           <ul className="flex flex-col gap-4 mt-4">
             {employees.map((employee) => {
-              const earnings = calcPerHour(employee.hours, shift.tips);
+              const earnings = calcWage(perhour, employee.hours);
               return (
                 <li key={employee.id} className="flex items-center">
                   <Button
