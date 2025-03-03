@@ -1,8 +1,11 @@
 import type { SynctipTheme } from ".";
 import { buttonTheme } from "./components/Button/theme";
 import { cardTheme } from "./components/Card/theme";
+import { drawerTheme } from "./components/Drawer/theme";
 import { dropdownTheme } from "./components/Dropdown/theme";
 import {
+  Bar2IconTheme,
+  chevronTheme,
   moonIconTheme,
   sunIconTheme,
   xMarkIconTheme,
@@ -11,6 +14,10 @@ import { navbarTheme } from "./components/Navbar/theme";
 import { themeToggleTheme } from "./components/ThemeToggle/theme";
 
 export const theme: SynctipTheme = {
+  root: {
+    main: "",
+  },
+  drawer: drawerTheme,
   dropdown: dropdownTheme,
   button: buttonTheme,
   navbar: navbarTheme,
@@ -22,5 +29,7 @@ export const theme: SynctipTheme = {
     moon: moonIconTheme,
     sun: sunIconTheme,
     xMark: xMarkIconTheme,
+    bar2: Bar2IconTheme,
+    chevron: chevronTheme,
   },
 };

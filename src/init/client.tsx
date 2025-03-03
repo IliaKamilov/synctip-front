@@ -1,7 +1,7 @@
 "use client";
 
 import { CustomSynctipTheme } from "@/components/Synctip";
-import { setTheme } from "..";
+import { setTheme } from "../store/theme";
 
 interface Props {
   theme?: CustomSynctipTheme;
