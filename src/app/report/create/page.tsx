@@ -17,7 +17,11 @@ import {
   calcWage,
   toILS,
 } from "@/utils/number";
-import { extractTime, parseTimeToDecimal } from "@/utils/time";
+import {
+  extractTime,
+  parseDecimalToTime,
+  parseTimeToDecimal,
+} from "@/utils/time";
 import { useRouter } from "next/navigation";
 import {
   ChangeEvent,
@@ -144,6 +148,28 @@ const AddEmployee: FC<AddEmployeeProps> = ({}) => {
   );
 };
 
+interface TimeProps extends ComponentProps<"time"> {
+  display?: "number" | "time";
+  value: number;
+}
+
+const Time: FC<TimeProps> = ({ value = 0, display = "number", ...props }) => {
+  const RenderTime = () => {
+    switch (display) {
+      case "time":
+        return parseDecimalToTime(value);
+      default:
+        return value.toFixed(2);
+    }
+  };
+
+  return (
+    <time {...props}>
+      <RenderTime />
+    </time>
+  );
+};
+
 const NewReportPage = () => {
   const isMounted = useIsMounted();
   const router = useRouter();
@@ -151,6 +177,8 @@ const NewReportPage = () => {
   const { items: employees } = useEmployeeState();
   const { data: shift, update } = useShiftState();
   const [selected, setSelected] = useState<Employee | null>(null);
+  const [timeDisplay, setTimeDisplay] =
+    useState<TimeProps["display"]>("number");
 
   const handleDetailsChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (Object.keys(shift).includes(e.currentTarget.name)) {
@@ -183,16 +211,19 @@ const NewReportPage = () => {
 
   return (
     <Fragment>
-      <Navbar className="min-h-[80px]">
-        <Button onClick={() => router.back()} className="py-2 fixed right-0">
-          <Chevron direction="right" className="p-4" width={56} height={56} />
+      <Navbar className="min-h-[80px] sticky top-0 bg-white dark:bg-gray-900 z-10 shadow-sm">
+        <Button
+          onClick={() => router.back()}
+          className="py-2 fixed right-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+        >
+          <Chevron direction="right" className="p-3" width={48} height={48} />
         </Button>
-        <h1 className="w-full text-center text-lg font-semibold">דוח טיפים</h1>
+        <h1 className="w-full text-center text-xl font-bold">דוח טיפים</h1>
         <Button
           onClick={handleSend}
           disabled={employees.length === 0 || loading}
           className={twMerge(
-            "bg-green-500 text-gray-900 dark:text-gray-900 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 font-semibold p-2 px-4 text-md rounded-lg ml-4 fixed left-0",
+            "bg-green-500 hover:bg-green-600 text-white transition-all duration-200 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 font-semibold p-2.5 px-6 text-md rounded-xl ml-4 fixed left-2",
             loading &&
               "bg-transparent disabled:bg-transparent dark:bg-transparent disabled:dark:bg-transparent",
           )}
@@ -200,10 +231,10 @@ const NewReportPage = () => {
           {loading ? <Spinner color="success" size="md" /> : "שלח"}
         </Button>
       </Navbar>
-      <main className="box-border flex flex-grow-1 flex-col w-full h-full py-4 gap-4 overflow-auto">
-        <section className="p-4 gap-4 flex flex-col dark:bg-gray-900">
+      <main className="box-border flex flex-grow-1 flex-col w-full h-full max-w-2xl mx-auto py-6 gap-6 overflow-auto px-4">
+        <section className="p-6 gap-6 flex flex-col rounded-xl bg-white dark:bg-gray-900 shadow-sm">
           <div>
-            <h2 className="text-sm font-semibold">תאריך</h2>
+            <h2 className="text-sm font-bold mb-2">תאריך</h2>
             <Input
               name="date"
               type="date"
@@ -213,7 +244,7 @@ const NewReportPage = () => {
             />
           </div>
           <div>
-            <h2 className="text-sm font-semibold">קופה</h2>
+            <h2 className="text-sm font-bold mb-2">קופה</h2>
             <Input
               name="total"
               type="number"
@@ -223,7 +254,7 @@ const NewReportPage = () => {
             />
           </div>
           <div>
-            <h2 className="text-sm font-semibold">טיפים</h2>
+            <h2 className="text-sm font-bold mb-2">טיפים</h2>
             <Input
               name="tips"
               type="number"
@@ -233,33 +264,62 @@ const NewReportPage = () => {
             />
           </div>
         </section>
-        <section className="p-4 dark:bg-gray-900 gap-2">
-          <h2 className="text-sm font-semibold">
-            {employees.length > 0 && `${employees.length} `}אנשי צוות
-          </h2>
-          <div className="flex flex-row gap-2 items-center">
-            <AddEmployee />
+        <section className="p-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm">
+          <div className="flex flex-row items-center justify-between mb-4">
+            <h2 className="text-sm font-bold">
+              {employees.length > 0 && `${employees.length} `}אנשי צוות
+            </h2>
+            <div className="flex flex-row gap-2 text-sm items-center">
+              הצג:
+              <div className="flex flex-row items-center gap-2 text-sm bg-gray-50 dark:bg-gray-800 rounded-lg p-1">
+                <button
+                  className={twMerge(
+                    "px-3 py-1.5 rounded-md transition-all duration-200",
+                    timeDisplay === "number"
+                      ? "bg-white dark:bg-gray-700 shadow-sm font-bold"
+                      : "text-gray-500 hover:text-gray-900",
+                  )}
+                  onClick={() => setTimeDisplay("number")}
+                >
+                  מספר
+                </button>
+                <button
+                  className={twMerge(
+                    "px-3 py-1.5 rounded-md transition-all duration-200",
+                    timeDisplay === "time"
+                      ? "bg-white dark:bg-gray-700 shadow-sm font-bold"
+                      : "text-gray-500 hover:text-gray-900",
+                  )}
+                  onClick={() => setTimeDisplay("time")}
+                >
+                  שעות
+                </button>
+              </div>
+            </div>
           </div>
-          <ul className="flex flex-col gap-4 mt-4">
+          <AddEmployee />
+          <ul className="flex flex-col gap-3 mt-6">
             {employees.map((employee) => {
               const earnings = calcWage(perhour, employee.hours);
               return (
-                <li key={employee.id} className="flex items-center">
+                <li key={employee.id}>
                   <Button
-                    className="flex flex-row items-start w-full gap-4"
+                    className="flex flex-row items-center w-full gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
                     onClick={() => setSelected(employee)}
                   >
-                    <Avatar alt={employee.name} src={employee.image} />
-                    <div className="w-full flex flex-col items-start justify-start">
-                      <div className="text-md h-full items-center flex justify-center">
-                        {employee.name}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {employee.hours.toFixed(2)} {`ש'`}
+                    <Avatar
+                      alt={employee.name}
+                      src={employee.image}
+                      className="size-12"
+                    />
+                    <div className="w-full flex flex-col items-start">
+                      <div className="text-md font-medium">{employee.name}</div>
+                      <div className="text-sm text-gray-500">
+                        <Time value={employee.hours} display={timeDisplay} />
                       </div>
                     </div>
                     {earnings > 0 && (
-                      <div className="bg-green-100 dark:bg-green-900 text-xs border-green-300 border px-1 py-0.5 rounded-md">
+                      <div className="bg-green-50 dark:bg-green-900/50 text-green-700 dark:text-green-300 text-sm font-medium px-2.5 py-1.5 rounded-lg">
                         {toILS(earnings)}
                       </div>
                     )}
@@ -269,33 +329,34 @@ const NewReportPage = () => {
             })}
           </ul>
         </section>
-        <section className="p-4 dark:bg-gray-900 flex flex-col gap-2">
-          <h2 className="text-sm font-semibold ">סיכום</h2>
+        <section className="p-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm">
+          <h2 className="text-sm font-bold mb-4">סיכום</h2>
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <h3 className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+              <h3 className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                 תאריך
               </h3>
-              <time className="text-md font-medium">{localeDate}</time>
+              <time className="text-md font-semibold">{localeDate}</time>
             </div>
-            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <h3 className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+              <h3 className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                 שעות צוות
               </h3>
-              <span className="text-md font-medium">{hours.toFixed(2)}</span>
+              <span className="text-md font-semibold">
+                <Time value={hours} display={timeDisplay} />
+              </span>
             </div>
-            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <h3 className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+              <h3 className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                 טיפ לשעה
               </h3>
-              <span className="text-md font-medium">{toILS(perhour)}</span>
+              <span className="text-md font-semibold">{toILS(perhour)}</span>
             </div>
-
-            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <h3 className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+              <h3 className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                 אחוז שירות
               </h3>
-              <span className="text-md font-medium">
+              <span className="text-md font-semibold">
                 {calcAvgTips(shift.tips, shift.total).toFixed(1)} %
               </span>
             </div>
