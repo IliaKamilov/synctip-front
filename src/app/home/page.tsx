@@ -1,15 +1,17 @@
 import { Drawer } from "@/components/Drawer";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import Link from "next/link";
 import { Fragment } from "react";
 
 const HomeNavbar = () => {
   return (
     <Fragment>
-      <nav className="rtl:flex-row-reverse flex">
+      <nav className="rtl:flex-row-reverse flex justify-between fixed w-full">
         <Drawer label="תפריט ראשי">
           <ul>
+            <ol className="px-4 font-bold text-sm">טיפים</ol>
             <li className="flex w-full min-w-[200px]">
-              <Link href="/new/report" className="flex w-full items-center">
+              <Link href="/report/create" className="flex w-full items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -31,6 +33,7 @@ const HomeNavbar = () => {
             </li>
           </ul>
         </Drawer>
+        <ThemeToggle />
       </nav>
     </Fragment>
   );

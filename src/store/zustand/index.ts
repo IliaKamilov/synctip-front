@@ -20,14 +20,14 @@ export const useEmployeeState = create<EmployeeState>((set) => ({
   items: [],
   add: (payload) => {
     set((state) => ({
-      items: [...state.items, { ...payload, id: `E${state.items.length}` }],
+      items: [{ ...payload, id: `E${state.items.length}` }, ...state.items],
     }));
   },
   remove: (id) =>
     set((state) => ({ items: state.items.filter((item) => item.id !== id) })),
 }));
 
-interface Shift {
+export interface Shift {
   date: number;
   total: number;
   tips: number;

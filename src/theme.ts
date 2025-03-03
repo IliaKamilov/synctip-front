@@ -1,4 +1,5 @@
 import type { SynctipTheme } from ".";
+import { avatarTheme } from "./components/Avatar/theme";
 import { buttonTheme } from "./components/Button/theme";
 import { cardTheme } from "./components/Card/theme";
 import { drawerTheme } from "./components/Drawer/theme";
@@ -10,6 +11,7 @@ import {
   sunIconTheme,
   xMarkIconTheme,
 } from "./components/Icon/theme";
+import { modalTheme } from "./components/Modal/theme";
 import { navbarTheme } from "./components/Navbar/theme";
 import { themeToggleTheme } from "./components/ThemeToggle/theme";
 
@@ -17,6 +19,8 @@ export const theme: SynctipTheme = {
   root: {
     main: "",
   },
+  modal: modalTheme,
+  avatar: avatarTheme,
   drawer: drawerTheme,
   dropdown: dropdownTheme,
   button: buttonTheme,
