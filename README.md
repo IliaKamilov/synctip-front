@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Synctip
+
+[![GitHub release](https://img.shields.io/github/v/release/IliaKamilov/synctip)](https://github.com/IliaKamilov/synctip/releases/latest)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fwww.synctip.com)](https://www.synctip.com)
+![GitHub branch status](https://img.shields.io/github/checks-status/IliaKamilov/synctip/main)
+
+## Overview
+
+Synctip is a comprehensive tip calculation and management platform designed to streamline operations for businesses in the service industry. Our solution eliminates human calculation errors, reduces time spent on shift reporting, and provides a centralized platform for all stakeholders.
+
+### Who It's For
+
+- **Employees**: Access transparent earnings tracking and shift details in one place
+- **Managers**: Streamline back-office operations with efficient tools and automated processes
+- **Business Owners**: Leverage powerful analytics and statistics to make data-driven decisions
+
+## Key Features
+
+### Tips Management
+
+- Automated tip calculations with support for multiple employees
+- Customizable distribution rules and shift parameters
+- Real-time calculation updates and verification
+- Historical records and reporting
+
+### Communication Tools
+
+- Seamless WhatsApp integration for instant shift report sharing
+
+### Analytics & Reporting
+
+- Comprehensive earnings tracking
+- Shift performance metrics
+- Business intelligence dashboards
+- Export capabilities for accounting purposes
 
 ## Getting Started
 
-First, run the development server:
+1. Visit [www.synctip.com](https://www.synctip.com)
+2. Create your business account
+3. Add your team members
+4. Start managing tips efficiently
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Detailed usage instructions are available in our [official documentation](https://www.synctip.com/docs).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Support
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Email**: support@synctip.com
+- **Documentation**: [www.synctip.com/docs](https://www.synctip.com/docs)
+- **Help Center**: [www.synctip.com/help](https://www.synctip.com/help)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Legal Information
 
-## Learn More
+### Licensing
 
-To learn more about Next.js, take a look at the following resources:
+This software is proprietary and owned by Ilia Kamilov / Synctip. All rights reserved.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Restrictions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Unauthorized distribution is prohibited
+- Modification of source code is not permitted
+- Reverse engineering is strictly forbidden
 
-## Deploy on Vercel
+For licensing inquiries or partnership opportunities, please contact support@synctip.com.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Made with ❤️ by the Synctip Team

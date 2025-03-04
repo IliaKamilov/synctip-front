@@ -1,0 +1,144 @@
+name: Release
+on:
+  push:
+    branches: [main, develop, preview]
+
+jobs:
+  release:
+    name: 📦 Create Release
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/develop' && 'development' || github.ref == 'refs/heads/preview' && 'preview' }}
+
+    steps:
+      - name: ⬇️ Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🔧 Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: ⎔ Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+          cache: "npm"
+
+      - name: 📥 Install Dependencies
+        run: npm ci
+
+      - name: 👷 Build Project
+        run: npm run build
+
+      - name: 🔍 Get Latest Version
+        id: latest_version
+        run: |
+          # Get the latest version tag
+          LATEST_TAG=$(git describe --tags --match "v[0-9]*" --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LATEST_VERSION=${LATEST_TAG#v}
+
+          # Handle merges from preview to main
+          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+            # Remove rc suffix if present
+            LATEST_VERSION=$(echo $LATEST_VERSION | sed -E 's/-rc\.[0-9]+$//')
+          fi
+
+          echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+          echo "Latest version determined as: $LATEST_VERSION"
+
+      - name: 📝 Generate New Version
+        id: version
+        run: |
+          # Parse current version
+          IFS='.' read -r MAJOR MINOR PATCH <<< "${{ steps.latest_version.outputs.latest_version }}"
+          PATCH_BASE=$(echo $PATCH | sed -E 's/-.*$//')  # Remove any suffix
+
+          # Increment based on conventional commits
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          if [[ $COMMIT_MSG == feat!:* ]] || [[ $COMMIT_MSG == *"BREAKING CHANGE"* ]]; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [[ $COMMIT_MSG == feat:* ]]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          else
+            PATCH=$((PATCH_BASE + 1))
+          fi
+
+          BASE_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "Base version calculated as: $BASE_VERSION"
+
+          # Set version based on branch
+          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+            NEW_VERSION="$BASE_VERSION"
+          elif [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+            COMMIT_COUNT=$(git rev-list --count HEAD)
+            NEW_VERSION="$BASE_VERSION-develop.$COMMIT_COUNT"
+          elif [[ $GITHUB_REF == 'refs/heads/preview' ]]; then
+            RC_COUNT=$(git tag -l "v$BASE_VERSION-rc.*" | wc -l)
+            NEW_VERSION="$BASE_VERSION-rc.$((RC_COUNT + 1))"
+          fi
+
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Version generated as: $NEW_VERSION"
+
+      - name: 🏷️ Create Git Tag
+        if: steps.version.outputs.new_version != ''
+        run: |
+          NEW_VERSION="${{ steps.version.outputs.new_version }}"
+          echo "Creating tag v${NEW_VERSION}"
+
+          # Check if tag already exists
+          if git rev-parse "v${NEW_VERSION}" >/dev/null 2>&1; then
+            echo "Tag v${NEW_VERSION} already exists. Skipping tag creation."
+            exit 0
+          fi
+
+          git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
+          git push origin "v${NEW_VERSION}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📝 Generate Changelog
+        id: changelog
+        run: |
+          # Get all commits since last tag
+          PREVIOUS_TAG=$(git describe --tags --match "v[0-9]*" --abbrev=0 "HEAD^" 2>/dev/null || echo "")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            CHANGELOG=$(git log --pretty=format:"* %s (%h)" --no-merges)
+          else
+            CHANGELOG=$(git log --pretty=format:"* %s (%h)" --no-merges ${PREVIOUS_TAG}..HEAD)
+          fi
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 🚀 Create GitHub Release
+        if: steps.version.outputs.new_version != ''
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.version.outputs.new_version }}
+          release_name: Release v${{ steps.version.outputs.new_version }}
+          body: ${{ steps.changelog.outputs.CHANGELOG }}
+          draft: false
+          prerelease: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: 📝 Update package.json Version
+        if: steps.version.outputs.new_version != ''
+        run: |
+          NEW_VERSION=${{ steps.version.outputs.new_version }}
+          jq --arg v "$NEW_VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
+
+          git add package.json
+          git commit -m "chore: update package.json version to ${NEW_VERSION} [skip ci]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
