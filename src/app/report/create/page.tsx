@@ -40,7 +40,7 @@ const Input: FC<InputProps> = ({ className, ...props }) => {
     <input
       className={twMerge(
         className,
-        "p-2 box-border w-full bg-white dark:bg-gray-800 border dark:border-gray-700 outline-none rounded-lg my-2"
+        "p-2 box-border w-full bg-white dark:bg-gray-800 border dark:border-gray-700 outline-none rounded-lg my-2",
       )}
       {...props}
     />
@@ -227,7 +227,7 @@ const NewReportPage = () => {
           className={twMerge(
             "bg-green-500 hover:bg-green-600 text-white transition-all duration-300 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 font-semibold py-2 px-4 text-md rounded-xl ml-3 fixed left-2 shadow-sm hover:shadow-md",
             loading &&
-              "bg-transparent disabled:bg-transparent dark:bg-transparent disabled:dark:bg-transparent"
+              "bg-transparent disabled:bg-transparent dark:bg-transparent disabled:dark:bg-transparent",
           )}
         >
           {loading ? <Spinner color="success" size="md" /> : "שלח"}
@@ -287,7 +287,7 @@ const NewReportPage = () => {
                       "px-3 py-1.5 rounded-md transition-all duration-200",
                       timeDisplay === "number"
                         ? "bg-white dark:bg-gray-700 shadow-md font-bold"
-                        : "text-gray-500 hover:text-gray-900"
+                        : "text-gray-500 hover:text-gray-900",
                     )}
                     onClick={() => setTimeDisplay("number")}
                   >
@@ -298,7 +298,7 @@ const NewReportPage = () => {
                       "px-3 py-1.5 rounded-md transition-all duration-200",
                       timeDisplay === "time"
                         ? "bg-white dark:bg-gray-700 shadow-md font-bold"
-                        : "text-gray-500 hover:text-gray-900"
+                        : "text-gray-500 hover:text-gray-900",
                     )}
                     onClick={() => setTimeDisplay("time")}
                   >
