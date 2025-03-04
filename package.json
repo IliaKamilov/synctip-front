@@ -1,7 +1,11 @@
 {
   "name": "synctip",
-  "version": "0.0.21-develop.137",
+  "version": "0.0.18",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IliaKamilov/synctip.git"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
