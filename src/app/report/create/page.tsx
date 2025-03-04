@@ -40,7 +40,7 @@ const Input: FC<InputProps> = ({ className, ...props }) => {
     <input
       className={twMerge(
         className,
-        "p-2 box-border w-full bg-white dark:bg-gray-800 border dark:border-gray-700 outline-none rounded-lg my-2",
+        "p-2 box-border w-full bg-white dark:bg-gray-800 border dark:border-gray-700 outline-none rounded-lg my-2"
       )}
       {...props}
     />
@@ -211,155 +211,167 @@ const NewReportPage = () => {
 
   return (
     <Fragment>
-      <Navbar className="min-h-[80px] sticky top-0 bg-white dark:bg-gray-900 z-10 shadow-sm">
+      <Navbar className="min-h-[60px] sticky top-0 bg-white dark:bg-gray-900 z-10 shadow-md border-b dark:border-gray-800">
         <Button
           onClick={() => router.back()}
-          className="py-2 fixed right-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+          className="py-1 fixed right-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all duration-200"
         >
-          <Chevron direction="right" className="p-3" width={48} height={48} />
+          <Chevron direction="right" className="p-2" width={40} height={40} />
         </Button>
-        <h1 className="w-full text-center text-xl font-bold">דוח טיפים</h1>
+        <h1 className="w-full text-center text-xl font-bold tracking-tight">
+          דוח טיפים
+        </h1>
         <Button
           onClick={handleSend}
           disabled={employees.length === 0 || loading}
           className={twMerge(
-            "bg-green-500 hover:bg-green-600 text-white transition-all duration-200 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 font-semibold p-2.5 px-6 text-md rounded-xl ml-4 fixed left-2",
+            "bg-green-500 hover:bg-green-600 text-white transition-all duration-300 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 font-semibold py-2 px-4 text-md rounded-xl ml-3 fixed left-2 shadow-sm hover:shadow-md",
             loading &&
-              "bg-transparent disabled:bg-transparent dark:bg-transparent disabled:dark:bg-transparent",
+              "bg-transparent disabled:bg-transparent dark:bg-transparent disabled:dark:bg-transparent"
           )}
         >
           {loading ? <Spinner color="success" size="md" /> : "שלח"}
         </Button>
       </Navbar>
-      <main className="box-border flex flex-grow-1 flex-col w-full h-full max-w-2xl mx-auto py-6 gap-6 overflow-auto px-4">
-        <section className="p-6 gap-6 flex flex-col rounded-xl bg-white dark:bg-gray-900 shadow-sm">
-          <div>
-            <h2 className="text-sm font-bold mb-2">תאריך</h2>
-            <Input
-              name="date"
-              type="date"
-              placeholder="בחר תאריך"
-              value={formatDate(shift.date)}
-              onChange={handleDetailsChange}
-            />
-          </div>
-          <div>
-            <h2 className="text-sm font-bold mb-2">קופה</h2>
-            <Input
-              name="total"
-              type="number"
-              placeholder="0"
-              value={shift.total || ""}
-              onChange={handleDetailsChange}
-            />
-          </div>
-          <div>
-            <h2 className="text-sm font-bold mb-2">טיפים</h2>
-            <Input
-              name="tips"
-              type="number"
-              placeholder="0"
-              value={shift.tips || ""}
-              onChange={handleDetailsChange}
-            />
-          </div>
-        </section>
-        <section className="p-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm">
-          <div className="flex flex-row items-center justify-between mb-4">
-            <h2 className="text-sm font-bold">
-              {employees.length > 0 && `${employees.length} `}אנשי צוות
-            </h2>
-            <div className="flex flex-row gap-2 text-sm items-center">
-              הצג:
-              <div className="flex flex-row items-center gap-2 text-sm bg-gray-50 dark:bg-gray-800 rounded-lg p-1">
-                <button
-                  className={twMerge(
-                    "px-3 py-1.5 rounded-md transition-all duration-200",
-                    timeDisplay === "number"
-                      ? "bg-white dark:bg-gray-700 shadow-sm font-bold"
-                      : "text-gray-500 hover:text-gray-900",
-                  )}
-                  onClick={() => setTimeDisplay("number")}
-                >
-                  מספר
-                </button>
-                <button
-                  className={twMerge(
-                    "px-3 py-1.5 rounded-md transition-all duration-200",
-                    timeDisplay === "time"
-                      ? "bg-white dark:bg-gray-700 shadow-sm font-bold"
-                      : "text-gray-500 hover:text-gray-900",
-                  )}
-                  onClick={() => setTimeDisplay("time")}
-                >
-                  שעות
-                </button>
+      <main className="box-border min-w-full flex flex-grow-1 flex-col w-full h-full max-w-6xl mx-auto py-4 gap-4 overflow-auto px-3">
+        <div className="flex flex-col md:flex-row gap-4">
+          <section className="p-4 gap-4 flex flex-col rounded-2xl bg-white dark:bg-gray-900 shadow-lg md:w-1/3">
+            <div>
+              <h2 className="text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                תאריך
+              </h2>
+              <Input
+                name="date"
+                type="date"
+                placeholder="בחר תאריך"
+                value={formatDate(shift.date)}
+                onChange={handleDetailsChange}
+              />
+            </div>
+            <div>
+              <h2 className="text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                קופה
+              </h2>
+              <Input
+                name="total"
+                type="number"
+                placeholder="0"
+                value={shift.total || ""}
+                onChange={handleDetailsChange}
+              />
+            </div>
+            <div>
+              <h2 className="text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                טיפים
+              </h2>
+              <Input
+                name="tips"
+                type="number"
+                placeholder="0"
+                value={shift.tips || ""}
+                onChange={handleDetailsChange}
+              />
+            </div>
+          </section>
+
+          <section className="p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-lg md:w-2/3">
+            <div className="flex flex-row items-center justify-between mb-4">
+              <h2 className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                {employees.length > 0 && `${employees.length} `}אנשי צוות
+              </h2>
+              <div className="flex flex-row gap-2 text-sm items-center">
+                הצג:
+                <div className="flex flex-row items-center gap-1 text-sm bg-gray-50 dark:bg-gray-800 rounded-lg p-1">
+                  <button
+                    className={twMerge(
+                      "px-3 py-1.5 rounded-md transition-all duration-200",
+                      timeDisplay === "number"
+                        ? "bg-white dark:bg-gray-700 shadow-md font-bold"
+                        : "text-gray-500 hover:text-gray-900"
+                    )}
+                    onClick={() => setTimeDisplay("number")}
+                  >
+                    מספר
+                  </button>
+                  <button
+                    className={twMerge(
+                      "px-3 py-1.5 rounded-md transition-all duration-200",
+                      timeDisplay === "time"
+                        ? "bg-white dark:bg-gray-700 shadow-md font-bold"
+                        : "text-gray-500 hover:text-gray-900"
+                    )}
+                    onClick={() => setTimeDisplay("time")}
+                  >
+                    שעות
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-          <AddEmployee />
-          <ul className="flex flex-col gap-3 mt-6">
-            {employees.map((employee) => {
-              const earnings = calcWage(perhour, employee.hours);
-              return (
-                <li key={employee.id}>
-                  <Button
-                    className="flex flex-row items-center w-full gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
-                    onClick={() => setSelected(employee)}
-                  >
-                    <Avatar
-                      alt={employee.name}
-                      src={employee.image}
-                      className="size-12"
-                    />
-                    <div className="w-full flex flex-col items-start">
-                      <div className="text-md font-medium">{employee.name}</div>
-                      <div className="text-sm text-gray-500">
-                        <Time value={employee.hours} display={timeDisplay} />
+            <AddEmployee />
+            <ul className="flex flex-col gap-3 mt-4">
+              {employees.map((employee) => {
+                const earnings = calcWage(perhour, employee.hours);
+                return (
+                  <li key={employee.id}>
+                    <Button
+                      className="flex flex-row items-center w-full gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all duration-200"
+                      onClick={() => setSelected(employee)}
+                    >
+                      <Avatar
+                        alt={employee.name}
+                        src={employee.image}
+                        className="size-12 shadow-sm"
+                      />
+                      <div className="w-full flex flex-col items-start">
+                        <div className="text-base font-medium">
+                          {employee.name}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          <Time value={employee.hours} display={timeDisplay} />
+                        </div>
                       </div>
-                    </div>
-                    {earnings > 0 && (
-                      <div className="bg-green-50 dark:bg-green-900/50 text-green-700 dark:text-green-300 text-sm font-medium px-2.5 py-1.5 rounded-lg">
-                        {toILS(earnings)}
-                      </div>
-                    )}
-                  </Button>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-        <section className="p-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm">
-          <h2 className="text-sm font-bold mb-4">סיכום</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-              <h3 className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                תאריך
-              </h3>
-              <time className="text-md font-semibold">{localeDate}</time>
-            </div>
-            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-              <h3 className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                שעות צוות
-              </h3>
-              <span className="text-md font-semibold">
-                <Time value={hours} display={timeDisplay} />
-              </span>
-            </div>
-            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-              <h3 className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                טיפ לשעה
-              </h3>
-              <span className="text-md font-semibold">{toILS(perhour)}</span>
-            </div>
-            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-              <h3 className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                אחוז שירות
-              </h3>
-              <span className="text-md font-semibold">
-                {calcAvgTips(shift.tips, shift.total).toFixed(1)} %
-              </span>
-            </div>
+                      {earnings > 0 && (
+                        <div className="bg-green-50 dark:bg-green-900/50 text-green-700 dark:text-green-300 text-sm font-semibold px-2 py-1.5 rounded-lg shadow-sm">
+                          {toILS(earnings)}
+                        </div>
+                      )}
+                    </Button>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        </div>
+
+        <section className="p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-lg backdrop-blur-sm">
+          <h2 className="text-xs font-bold mb-3 text-gray-800 dark:text-gray-200 tracking-wide">
+            סיכום
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {[
+              { label: "תאריך", value: localeDate },
+              {
+                label: "שעות צוות",
+                value: <Time value={hours} display={timeDisplay} />,
+              },
+              { label: "טיפ לשעה", value: toILS(perhour) },
+              {
+                label: "אחוז שירות",
+                value: `${calcAvgTips(shift.tips, shift.total).toFixed(1)} %`,
+              },
+            ].map(({ label, value }) => (
+              <div
+                key={label}
+                className="p-3 bg-gray-50/80 dark:bg-gray-800/80 rounded-xl hover:shadow-lg transition-all duration-300 group hover:scale-[1.02]"
+              >
+                <h3 className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">
+                  {label}
+                </h3>
+                <span className="text-base font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  {value}
+                </span>
+              </div>
+            ))}
           </div>
         </section>
       </main>
