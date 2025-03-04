@@ -9,7 +9,7 @@ const HomeNavbar = () => {
     <Fragment>
       <nav className="rtl:flex-row-reverse flex justify-between fixed w-full">
         <Drawer label="תפריט ראשי">
-          <ul>
+          <ul className="min-h-[50vh]">
             <ol className="px-4 font-bold text-sm">טיפים</ol>
             <li className="flex w-full min-w-[200px]">
               <Link href="/report/create" className="flex w-full items-center">
@@ -33,11 +33,16 @@ const HomeNavbar = () => {
               </Link>
             </li>
           </ul>
-          <div className="flex mt-10 p-2 text-gray-500 rtl:flex-row-reverse items-center justify-center text-xs font-light flex-row w-full gap-2">
-            <Link href="https://synctip.com">synctip.com</Link>
-            <span>&copy;</span>
+          <div className="flex p-3 text-gray-500 dark:text-gray-400 rtl:flex-row-reverse items-center justify-center text-xs font-light flex-row w-full gap-3 border-t border-gray-200 dark:border-gray-700">
             <Link
-              className="border p-0.5 px-1 rounded-md bg-gray-500 text-gray-900 border-gray-700"
+              href="https://synctip.com"
+              className="hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+            >
+              synctip.com
+            </Link>
+            <span className="text-sm">&copy;</span>
+            <Link
+              className="border px-2 py-1 rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-700 transition-all"
               href="https://github.com/iliakamilov/synctip"
             >
               v{pkg.version}
