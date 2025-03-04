@@ -2,6 +2,10 @@
   "name": "synctip",
   "version": "0.0.17",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IliaKamilov/synctip.git"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
