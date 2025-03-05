@@ -124,6 +124,7 @@ const AddEmployee: FC<AddEmployeeProps> = ({}) => {
           onChange={handleChange}
         />
         <Button
+          aria-label="add-employee"
           disabled={disabled}
           className="p-2 box-border disabled:opacity-20 bg-white dark:bg-gray-800 border rounded-lg items-center flex"
         >
@@ -190,7 +191,8 @@ const NewReportPage = () => {
 
   const handleSend = () => {
     setLoading(true);
-    router.push(encodeWhatsAppMessage({ shift, employees }).url);
+    const url = encodeWhatsAppMessage({ shift, employees }).url;
+    router.push(url);
 
     setTimeout(() => {
       setLoading(false);
@@ -222,6 +224,7 @@ const NewReportPage = () => {
           דוח טיפים
         </h1>
         <Button
+          aria-label="wa-send"
           onClick={handleSend}
           disabled={employees.length === 0 || loading}
           className={twMerge(
@@ -349,7 +352,7 @@ const NewReportPage = () => {
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {[
-              { label: "תאריך", value: localeDate },
+              { label: "תאריך משמרת", value: localeDate },
               {
                 label: "שעות צוות",
                 value: <Time value={hours} display={timeDisplay} />,
