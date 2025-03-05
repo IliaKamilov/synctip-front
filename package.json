@@ -29,12 +29,14 @@
     "*.md": "npm run format"
   },
   "dependencies": {
+    "@auth/neon-adapter": "^1.8.0",
     "@floating-ui/react": "^0.27.5",
+    "@neondatabase/serverless": "^0.10.4",
     "@types/jest": "^29.5.14",
     "@uidotdev/usehooks": "^2.4.1",
     "big.js": "^6.2.2",
     "next": "15.1.7",
-    "next-auth": "^4.24.11",
+    "next-auth": "^5.0.0-beta.25",
     "playwright": "^1.50.1",
     "prettier": "^3.5.2",
     "react": "^19.0.0",

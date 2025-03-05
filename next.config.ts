@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
         hostname: "avatars.githubusercontent.com",
       },
     ],
+    domains: ["lh3.googleusercontent.com"],
   },
 };
 
