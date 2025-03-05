@@ -62,7 +62,7 @@ describe("NewReportPage", () => {
     expect(screen.getByText("דוח טיפים")).toBeInTheDocument();
     expect(screen.getByText("קופה")).toBeInTheDocument();
     expect(screen.getByText("טיפים")).toBeInTheDocument();
-    expect(screen.getByText("תאריך")).toBeInTheDocument();
+    expect(screen.getAllByText("תאריך")[0]).toBeInTheDocument();
   });
 
   test("adds employee correctly", () => {
