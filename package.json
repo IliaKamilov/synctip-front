@@ -33,7 +33,7 @@
     "@types/jest": "^29.5.14",
     "@uidotdev/usehooks": "^2.4.1",
     "big.js": "^6.2.2",
-    "next": "15.1.7",
+    "next": "15.2.3",
     "playwright": "^1.50.1",
     "prettier": "^3.5.2",
     "react": "^19.0.0",
