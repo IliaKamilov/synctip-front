@@ -278,26 +278,29 @@ const NewReportPage = () => {
 
   return (
     <Fragment>
-      <Navbar className="min-h-[60px] sticky top-0 bg-white dark:bg-gray-900 z-10 shadow-md border-b dark:border-gray-800">
+      <Navbar className="min-h-[60px] sticky top-0 z-10 shadow-md border-b dark:border-gray-800 px-4">
+        {/* Back Button - Left side */}
         <Button
           onClick={() => router.back()}
-          className="py-1 fixed right-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all duration-200"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all duration-200"
         >
-          <Chevron direction="right" className="p-2" width={40} height={40} />
+          <Chevron direction="right" width={24} height={24} />
         </Button>
 
+        {/* Title - Center */}
         <h1 className="text-xl font-bold tracking-tight">דוח טיפים</h1>
 
+        {/* Action Buttons - Right side */}
         <div className="flex items-center gap-2">
           {/* Copy Button */}
           <Button
             onClick={handleCopy}
             disabled={employees.length === 0}
             className={twMerge(
-              "text-white transition-all duration-300 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 font-semibold py-2 px-3 text-sm rounded-xl shadow-sm hover:shadow-md flex items-center gap-1",
+              "inline-flex items-center gap-2 px-3 py-2 text-sm font-medium transition-all duration-200 rounded-lg shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed",
               copySuccess
-                ? "bg-green-500 hover:bg-green-600"
-                : "bg-blue-500 hover:bg-blue-600",
+                ? "bg-green-500 hover:bg-green-600 text-white"
+                : "bg-blue-500 hover:bg-blue-600 text-white"
             )}
           >
             {copySuccess ? (
@@ -306,7 +309,7 @@ const NewReportPage = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth={1.5}
+                  strokeWidth={2}
                   stroke="currentColor"
                   className="w-4 h-4"
                 >
@@ -324,7 +327,7 @@ const NewReportPage = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth={1.5}
+                  strokeWidth={2}
                   stroke="currentColor"
                   className="w-4 h-4"
                 >
@@ -344,9 +347,10 @@ const NewReportPage = () => {
             onClick={handleSend}
             disabled={employees.length === 0 || loading}
             className={twMerge(
-              "bg-green-500 hover:bg-green-600 text-white transition-all duration-300 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 font-semibold py-2 px-3 text-sm rounded-xl shadow-sm hover:shadow-md flex items-center gap-1",
-              loading &&
-                "bg-transparent disabled:bg-transparent dark:bg-transparent disabled:dark:bg-transparent",
+              "inline-flex items-center gap-2 px-3 py-2 text-sm font-medium transition-all duration-200 rounded-lg shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed",
+              loading
+                ? "bg-green-600 text-white"
+                : "bg-green-500 hover:bg-green-600 text-white"
             )}
           >
             {loading ? (
@@ -421,7 +425,7 @@ const NewReportPage = () => {
                       "px-3 py-1.5 rounded-md transition-all duration-200",
                       timeDisplay === "number"
                         ? "bg-white dark:bg-gray-700 shadow-md font-bold"
-                        : "text-gray-500 hover:text-gray-900",
+                        : "text-gray-500 hover:text-gray-900"
                     )}
                     onClick={() => setTimeDisplay("number")}
                   >
@@ -432,7 +436,7 @@ const NewReportPage = () => {
                       "px-3 py-1.5 rounded-md transition-all duration-200",
                       timeDisplay === "time"
                         ? "bg-white dark:bg-gray-700 shadow-md font-bold"
-                        : "text-gray-500 hover:text-gray-900",
+                        : "text-gray-500 hover:text-gray-900"
                     )}
                     onClick={() => setTimeDisplay("time")}
                   >
