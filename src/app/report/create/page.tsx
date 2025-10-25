@@ -40,7 +40,7 @@ const Input: FC<InputProps> = ({ className, ...props }) => {
     <input
       className={twMerge(
         className,
-        "p-2 box-border w-full bg-white dark:bg-gray-800 border dark:border-gray-700 outline-none rounded-lg my-2"
+        "p-2 box-border w-full bg-white dark:bg-gray-800 border dark:border-gray-700 outline-none rounded-lg my-2",
       )}
       {...props}
     />
@@ -300,7 +300,7 @@ const NewReportPage = () => {
               "inline-flex items-center gap-2 px-3 py-2 text-sm font-medium transition-all duration-200 rounded-lg shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed",
               copySuccess
                 ? "bg-green-500 hover:bg-green-600 text-white"
-                : "bg-blue-500 hover:bg-blue-600 text-white"
+                : "bg-blue-500 hover:bg-blue-600 text-white",
             )}
           >
             {copySuccess ? (
@@ -350,7 +350,7 @@ const NewReportPage = () => {
               "inline-flex items-center gap-2 px-3 py-2 text-sm font-medium transition-all duration-200 rounded-lg shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed",
               loading
                 ? "bg-green-600 text-white"
-                : "bg-green-500 hover:bg-green-600 text-white"
+                : "bg-green-500 hover:bg-green-600 text-white",
             )}
           >
             {loading ? (
@@ -425,7 +425,7 @@ const NewReportPage = () => {
                       "px-3 py-1.5 rounded-md transition-all duration-200",
                       timeDisplay === "number"
                         ? "bg-white dark:bg-gray-700 shadow-md font-bold"
-                        : "text-gray-500 hover:text-gray-900"
+                        : "text-gray-500 hover:text-gray-900",
                     )}
                     onClick={() => setTimeDisplay("number")}
                   >
@@ -436,7 +436,7 @@ const NewReportPage = () => {
                       "px-3 py-1.5 rounded-md transition-all duration-200",
                       timeDisplay === "time"
                         ? "bg-white dark:bg-gray-700 shadow-md font-bold"
-                        : "text-gray-500 hover:text-gray-900"
+                        : "text-gray-500 hover:text-gray-900",
                     )}
                     onClick={() => setTimeDisplay("time")}
                   >
