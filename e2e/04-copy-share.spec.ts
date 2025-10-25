@@ -1,7 +1,11 @@
 import { test, expect } from "@playwright/test";
+import { SynctipTestHelpers } from "./helpers";
 
 test.describe("Copy and Share Functionality", () => {
+  let helpers: SynctipTestHelpers;
+
   test.beforeEach(async ({ page }) => {
+    helpers = new SynctipTestHelpers(page);
     await page.goto("/report/create");
 
     // Set up a complete report for testing
@@ -82,20 +86,18 @@ test.describe("Copy and Share Functionality", () => {
     await expect(page.locator('text="הועתק!"')).toBeVisible({ timeout: 3000 });
   });
 
-  test("should handle WhatsApp sharing", async ({ page }) => {
-    const whatsappButton = page.locator('button:has-text("שלח")').first();
+  test("should handle WhatsApp sharing", async () => {
+    // Use helpers for consistent button selection
+    const whatsappButton = helpers.elements.whatsappButton;
 
     // Verify WhatsApp button is clickable
     await expect(whatsappButton).toBeEnabled();
 
-    // Click WhatsApp button
+    // Click WhatsApp button - this will trigger navigation to WhatsApp
     await whatsappButton.click();
 
-    // Wait a moment for any potential navigation
-    await page.waitForTimeout(1000);
-
-    // Verify the action completed (button should still be enabled for retry)
-    await expect(whatsappButton).toBeEnabled();
+    // Just verify the click was successful - no need to check post-navigation state
+    // since WhatsApp redirects immediately to external site
   });
 
   test("should disable buttons when no employees", async ({ page }) => {
@@ -164,16 +166,22 @@ test.describe("Copy and Share Functionality", () => {
   });
 
   test("should show correct RTL layout", async ({ page }) => {
+    // Set up some data first so all sections are visible
+    await helpers.setupBasicShift();
+
     // Check that text and layout are properly right-to-left
     const title = page.locator("h1");
-
     await expect(title).toContainText("דוח טיפים");
 
     // Check that Hebrew text is displayed correctly
     await expect(page.locator('text="תאריך"')).toBeVisible();
     await expect(page.locator('text="קופה"')).toBeVisible();
     await expect(page.locator('text="טיפים"')).toBeVisible();
-    await expect(page.locator('text="אנשי צוות"')).toBeVisible();
+
+    // This text only appears when there are employees - includes count
+    await expect(page.getByText("אנשי צוות")).toBeVisible();
+
+    // Check for summary section
     await expect(page.locator('text="סיכום"')).toBeVisible();
   });
 });

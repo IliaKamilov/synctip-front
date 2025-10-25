@@ -74,7 +74,7 @@ export class SynctipTestHelpers {
       copyButton: this.page
         .locator('button:has-text("העתק"), button:has([title="העתק"])')
         .first(),
-      whatsappButton: this.page.locator('button:has-text("שלח")').first(),
+      whatsappButton: this.page.locator('button[class*="bg-green"]').first(),
       addEmployeeButton: this.page
         .locator("form")
         .filter({

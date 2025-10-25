@@ -41,8 +41,16 @@ test.describe("Employee Management", () => {
       .filter({ has: employeeInput })
       .locator("button");
 
-    // Button should be disabled for invalid input
-    await expect(addButton).toBeDisabled();
+    // Button should be enabled but clicking should show error
+    await expect(addButton).toBeEnabled();
+
+    // Click the button to trigger validation
+    await addButton.click();
+
+    // Should show error message for invalid format
+    await expect(
+      page.locator('text="יש להזין שעות בפורמט שעתי או עשרוני"'),
+    ).toBeVisible();
   });
 
   test("should add multiple employees", async ({ page }) => {
