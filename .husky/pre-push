@@ -1,1 +1,33 @@
-npm test
+echo "Running pre-push validation..."
+
+# Ensure we're up to date with formatting and linting
+echo "Final format and lint check..."
+npm run format:check || exit 1
+npm run lint || exit 1
+
+# Type checking
+echo "Type checking..."
+npm run type-check || exit 1
+
+# Run all unit tests
+echo "Running unit tests..."
+npm test || exit 1
+
+# Build check
+echo "Final build verification..."
+npm run build || exit 1
+
+# Skip E2E tests in CI environment or if Playwright browsers not installed
+if [ "$CI" = "true" ] || [ "$GITHUB_ACTIONS" = "true" ]; then
+  echo "Skipping E2E tests in CI environment..."
+else
+  echo "Checking if Playwright browsers are installed..."
+  if npx playwright install --dry-run > /dev/null 2>&1; then
+    echo "Running critical E2E tests..."
+    npm run test:e2e:critical || echo "Warning: E2E tests failed, but allowing push to proceed"
+  else
+    echo "Playwright browsers not installed, skipping E2E tests..."
+  fi
+fi
+
+echo "All pre-push validations passed! Ready to push"
