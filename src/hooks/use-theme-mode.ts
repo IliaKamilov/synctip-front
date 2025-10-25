@@ -20,7 +20,7 @@ export const useThemeMode = () => {
   useEffect(() => {
     setModeInLS(mode);
     setModeInDOM(mode);
-  }, []);
+  }, [mode]);
 
   /**
    * Sync all tabs with the latest theme mode value
@@ -91,7 +91,7 @@ const useSyncMode = (onChange: (mode: ThemeMode) => void) => {
 
     document.addEventListener(SYNC_THEME_MODE, handleSync);
     return () => document.removeEventListener(SYNC_THEME_MODE, handleSync);
-  }, []);
+  }, [onChange]);
 };
 
 /**
