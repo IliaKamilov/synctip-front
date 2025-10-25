@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import NewReportPage from "./page";
 import { useEmployeeState, useShiftState } from "@/store/zustand";
@@ -69,7 +69,9 @@ describe("NewReportPage", () => {
     render(<NewReportPage />);
 
     const input = screen.getByPlaceholderText("הוסף איש צוות");
-    const addButton = screen.getByLabelText("add-employee");
+    // Find the add button by getting the button within the same container as the input
+    const form = input.closest("form")!;
+    const addButton = within(form).getByRole("button");
 
     fireEvent.change(input, { target: { value: "John 8" } });
     fireEvent.click(addButton);
@@ -84,7 +86,9 @@ describe("NewReportPage", () => {
     render(<NewReportPage />);
 
     const input = screen.getByPlaceholderText("הוסף איש צוות");
-    const addButton = screen.getByLabelText("add-employee");
+    // Find the add button by getting the button within the same container as the input
+    const form = input.closest("form")!;
+    const addButton = within(form).getByRole("button");
 
     expect(addButton).toBeDisabled();
 
