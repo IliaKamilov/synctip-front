@@ -40,7 +40,7 @@ const Input: FC<InputProps> = ({ className, ...props }) => {
     <input
       className={twMerge(
         className,
-        "p-2 box-border w-full bg-white dark:bg-gray-800 border dark:border-gray-700 outline-none rounded-lg my-2",
+        "p-2 box-border w-full bg-white dark:bg-gray-800 border dark:border-gray-700 outline-none rounded-lg my-2"
       )}
       {...props}
     />
@@ -124,6 +124,7 @@ const AddEmployee: FC<AddEmployeeProps> = ({}) => {
           onChange={handleChange}
         />
         <Button
+          aria-label="add-employee"
           disabled={disabled}
           className="p-2 box-border disabled:opacity-20 bg-white dark:bg-gray-800 border rounded-lg items-center flex"
         >
@@ -191,7 +192,8 @@ const NewReportPage = () => {
 
   const handleSend = () => {
     setLoading(true);
-    router.push(encodeWhatsAppMessage({ shift, employees }).url);
+    const url = encodeWhatsAppMessage({ shift, employees }).url;
+    router.push(url);
 
     setTimeout(() => {
       setLoading(false);
@@ -276,10 +278,10 @@ const NewReportPage = () => {
 
   return (
     <Fragment>
-      <Navbar className="min-h-[60px] sticky top-0 bg-white dark:bg-gray-900 z-10 shadow-md border-b dark:border-gray-800 flex items-center justify-between px-4">
+      <Navbar className="min-h-[60px] sticky top-0 bg-white dark:bg-gray-900 z-10 shadow-md border-b dark:border-gray-800">
         <Button
           onClick={() => router.back()}
-          className="py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all duration-200"
+          className="py-1 fixed right-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all duration-200"
         >
           <Chevron direction="right" className="p-2" width={40} height={40} />
         </Button>
@@ -295,7 +297,7 @@ const NewReportPage = () => {
               "text-white transition-all duration-300 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 font-semibold py-2 px-3 text-sm rounded-xl shadow-sm hover:shadow-md flex items-center gap-1",
               copySuccess
                 ? "bg-green-500 hover:bg-green-600"
-                : "bg-blue-500 hover:bg-blue-600",
+                : "bg-blue-500 hover:bg-blue-600"
             )}
           >
             {copySuccess ? (
@@ -344,7 +346,7 @@ const NewReportPage = () => {
             className={twMerge(
               "bg-green-500 hover:bg-green-600 text-white transition-all duration-300 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 font-semibold py-2 px-3 text-sm rounded-xl shadow-sm hover:shadow-md flex items-center gap-1",
               loading &&
-                "bg-transparent disabled:bg-transparent dark:bg-transparent disabled:dark:bg-transparent",
+                "bg-transparent disabled:bg-transparent dark:bg-transparent disabled:dark:bg-transparent"
             )}
           >
             {loading ? (
@@ -365,7 +367,6 @@ const NewReportPage = () => {
           </Button>
         </div>
       </Navbar>
-
       <main className="box-border min-w-full flex flex-grow-1 flex-col w-full h-full max-w-6xl mx-auto py-4 gap-4 overflow-auto px-3">
         <div className="flex flex-col md:flex-row gap-4">
           <section className="p-4 gap-4 flex flex-col rounded-2xl bg-white dark:bg-gray-900 shadow-lg md:w-1/3">
@@ -420,7 +421,7 @@ const NewReportPage = () => {
                       "px-3 py-1.5 rounded-md transition-all duration-200",
                       timeDisplay === "number"
                         ? "bg-white dark:bg-gray-700 shadow-md font-bold"
-                        : "text-gray-500 hover:text-gray-900",
+                        : "text-gray-500 hover:text-gray-900"
                     )}
                     onClick={() => setTimeDisplay("number")}
                   >
@@ -431,7 +432,7 @@ const NewReportPage = () => {
                       "px-3 py-1.5 rounded-md transition-all duration-200",
                       timeDisplay === "time"
                         ? "bg-white dark:bg-gray-700 shadow-md font-bold"
-                        : "text-gray-500 hover:text-gray-900",
+                        : "text-gray-500 hover:text-gray-900"
                     )}
                     onClick={() => setTimeDisplay("time")}
                   >
@@ -482,7 +483,7 @@ const NewReportPage = () => {
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {[
-              { label: "תאריך", value: localeDate },
+              { label: "תאריך משמרת", value: localeDate },
               {
                 label: "שעות צוות",
                 value: <Time value={hours} display={timeDisplay} />,
