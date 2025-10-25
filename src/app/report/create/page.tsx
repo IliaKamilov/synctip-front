@@ -40,7 +40,7 @@ const Input: FC<InputProps> = ({ className, ...props }) => {
     <input
       className={twMerge(
         className,
-        "p-2 box-border w-full bg-white dark:bg-gray-800 border dark:border-gray-700 outline-none rounded-lg my-2",
+        "p-2 box-border w-full bg-white dark:bg-gray-800 border dark:border-gray-700 outline-none rounded-lg my-2"
       )}
       {...props}
     />
@@ -180,6 +180,7 @@ const NewReportPage = () => {
   const [selected, setSelected] = useState<Employee | null>(null);
   const [timeDisplay, setTimeDisplay] =
     useState<TimeProps["display"]>("number");
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const handleDetailsChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (Object.keys(shift).includes(e.currentTarget.name)) {
@@ -197,6 +198,70 @@ const NewReportPage = () => {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
+  };
+
+  /**
+   * Handles copying the report text to clipboard with mobile-friendly fallbacks
+   */
+  const handleCopy = async () => {
+    const reportData = encodeWhatsAppMessage({ shift, employees });
+
+    // Check if modern clipboard API is available
+    if (!navigator.clipboard) {
+      copyToClipboardFallback(reportData.message);
+      return;
+    }
+
+    try {
+      // Try modern clipboard API first
+      await navigator.clipboard.writeText(reportData.message);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (err) {
+      console.error("Clipboard API failed:", err);
+      // Fallback to older method for mobile compatibility
+      copyToClipboardFallback(reportData.message);
+    }
+  };
+
+  /**
+   * Fallback copy method using execCommand - works better on mobile devices
+   */
+  const copyToClipboardFallback = (text: string) => {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+
+    // Position textarea off-screen but keep it accessible
+    textArea.style.position = "fixed";
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.width = "2em";
+    textArea.style.height = "2em";
+    textArea.style.padding = "0";
+    textArea.style.border = "none";
+    textArea.style.outline = "none";
+    textArea.style.boxShadow = "none";
+    textArea.style.background = "transparent";
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      const successful = document.execCommand("copy");
+      if (successful) {
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000);
+      } else {
+        throw new Error("execCommand failed");
+      }
+    } catch (execErr) {
+      console.error("execCommand failed:", execErr);
+      // Final fallback - show text for manual copy
+      alert("אנא העתק את הטקסט הבא:\n\n" + text);
+    } finally {
+      document.body.removeChild(textArea);
+    }
   };
 
   const hours = calcHours(employees.map((e) => e.hours));
@@ -378,6 +443,7 @@ const NewReportPage = () => {
           </div>
         </section>
       </main>
+
       {selected && (
         <EmployeeMenuModal
           employee={selected}
