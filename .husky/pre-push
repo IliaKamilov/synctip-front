@@ -1,1 +1,27 @@
-npm test
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Running pre-push validation..."
+
+# Ensure we're up to date with formatting and linting
+echo "Final format and lint check..."
+npm run format:check || exit 1
+npm run lint || exit 1
+
+# Type checking
+echo "Type checking..."
+npm run type-check || exit 1
+
+# Run all unit tests
+echo "Running unit tests..."
+npm test || exit 1
+
+# Build check
+echo "Final build verification..."
+npm run build || exit 1
+
+# Run critical E2E tests (just the essential ones for speed)
+echo "Running critical E2E tests..."
+npx playwright test e2e/00-critical-journeys.spec.ts --project="Desktop Chrome" --reporter=line || exit 1
+
+echo "All pre-push validations passed! Ready to push"

@@ -319,7 +319,7 @@ const NewReportPage = () => {
                     d="m4.5 12.75 6 6 9-13.5"
                   />
                 </svg>
-                <span className="hidden sm:inline">הועתק!</span>
+                <span className="inline">הועתק!</span>
               </>
             ) : (
               <>

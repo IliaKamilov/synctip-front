@@ -18,15 +18,28 @@
     "prepare": "husky",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:e2e": "playwright test --pass-with-no-tests"
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:report": "playwright show-report",
+    "test:e2e:critical": "playwright test e2e/00-critical-journeys.spec.ts --project=\"Desktop Chrome\"",
+    "validate": "bash scripts/validate.sh",
+    "validate:full": "bash scripts/validate.sh --full",
+    "precommit": "npm run validate && npm run test:e2e:critical",
+    "postinstall": "husky"
   },
   "lint-staged": {
     "*.{js,ts,tsx,jsx}": [
-      "npm run format",
-      "npm run lint:fix"
+      "prettier --write",
+      "eslint --fix",
+      "bash -c 'npm run type-check'"
     ],
-    "*.json": "npm run format",
-    "*.md": "npm run format"
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.{css,scss}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.5",

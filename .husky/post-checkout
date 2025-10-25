@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Setting up development environment..."
+
+# Install Playwright browsers if not already installed
+echo "Ensuring Playwright browsers are installed..."
+npx playwright install --with-deps
+
+echo "Development environment is ready!"

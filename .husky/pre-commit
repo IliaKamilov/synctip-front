@@ -1,1 +1,22 @@
-npx lint-staged
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Running pre-commit checks..."
+
+# Type checking
+echo "Type checking..."
+npm run type-check || exit 1
+
+# Linting and formatting via lint-staged
+echo "Linting and formatting staged files..."
+npx lint-staged || exit 1
+
+# Run unit tests
+echo "Running unit tests..."
+npm test || exit 1
+
+# Build check to ensure no build errors
+echo "Building project to check for errors..."
+npm run build || exit 1
+
+echo "All pre-commit checks passed!"

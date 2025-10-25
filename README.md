@@ -65,4 +65,7 @@ For licensing inquiries or partnership opportunities, please contact support@syn
 
 ---
 
-Made with ❤️ by the Synctip Team
+## Support Synctip
+
+If you like this project and want to support its development:  
+[Sponsor me on GitHub](https://github.com/sponsors/iliakamilov)
